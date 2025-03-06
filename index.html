@@ -4,10 +4,15 @@
   <title>Test Google Apps Script</title>
 </head>
 <body>
-  <form id="inspectionForm" action="https://script.google.com/macros/s/AKfycbx5CCXzE4oJLT4Wvg6CZomt2JKgn_o9_4FXW1_iZwzxhMH4BHwRwXs_nkEJraeshIQa/exec" method="POST">
+  <form id="inspectionForm" action="https://script.google.com/macros/s/AKfycbx5CCXzE4oJLT4Wvg6CZomt2JKgn_o9_4FXW1_iZwzxhMH4BHwRwXs_nkEJraeshIQa/exec" method="POST" target="_blank">
     <input type="hidden" name="txtDate" value="2025-03-06">
     <input type="hidden" name="cmbInspector" value="John">
     <button type="submit">Send POST Request</button>
   </form>
+  <script>
+    document.getElementById('inspectionForm').addEventListener('submit', function() {
+      console.log('Form submitted');
+    });
+  </script>
 </body>
 </html>
