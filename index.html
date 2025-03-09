@@ -1244,7 +1244,7 @@
     <button class="btn-export" id="exportExcelBtn">Export to Excel</button>
   </div>
 
-         <!-- Load SheetJS for Excel -->
+       <!-- Load SheetJS for Excel -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <!-- Load Google API Client Library (try external, fallback to local) -->
   <script src="https://apis.google.com/js/api.js" onerror="document.write('<script src=\"./gapi.js\"><\/script>')"></script>
@@ -1476,98 +1476,72 @@
     });
 
     // Wait for gapi with timeout
-    function waitForGapi() {
-      console.log('Waiting for gapi...');
-      return new Promise((resolve, reject) => {
-        if (typeof gapi !== 'undefined') {
-          console.log('gapi already loaded');
-          resolve();
-          return;
-        }
-        const script = document.querySelector('script[src="https://apis.google.com/js/api.js"]') || 
-                      document.querySelector('script[src="./gapi.js"]');
-        if (!script) {
-          console.error('Google API script tag missing');
-          reject(new Error('Google API script not found in HTML'));
-          return;
-        }
-        let timeout = setTimeout(() => {
-          console.error('gapi load timed out after 10 seconds');
-          reject(new Error('Google API failed to load within 10 seconds'));
-        }, 10000); // 10-second timeout
-        script.onload = () => {
-          clearTimeout(timeout);
-          console.log('Google API script loaded');
-          resolve();
-        };
-        script.onerror = () => {
-          clearTimeout(timeout);
-          console.error('Google API script failed to load');
-          reject(new Error('Failed to load Google API script'));
-        };
-      });
+function waitForGapi() {
+  console.log('Waiting for gapi...');
+  return new Promise((resolve, reject) => {
+    if (typeof gapi !== 'undefined') {
+      console.log('gapi already loaded');
+      resolve();
+      return;
     }
-
-    // Initialize Google API client
-    function initGoogleDrive() {
-      console.log('Initializing Google Drive API...');
-      return new Promise((resolve, reject) => {
-        if (typeof gapi === 'undefined') {
-          reject(new Error('Google API library not loaded'));
-          return;
-        }
-        gapi.load('client:auth2', () => {
-          gapi.client.init({
-            clientId: CLIENT_ID,
-            scope: SCOPES,
-            discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest']
-          }).then(() => {
-            const authInstance = gapi.auth2.getAuthInstance();
-            if (!authInstance.isSignedIn.get()) {
-              console.log('User not signed in, prompting sign-in...');
-              return authInstance.signIn();
-            }
-          }).then(() => {
-            console.log('Google Drive API initialized and user signed in');
-            resolve();
-          }).catch(error => {
-            console.error('Google Drive API init error:', error);
-            reject(error);
-          });
-        });
-      });
+    const script = document.querySelector('script[src="https://apis.google.com/js/api.js"]') || 
+                  document.querySelector('script[src="./gapi.js"]');
+    if (!script) {
+      console.error('Google API script tag missing');
+      reject(new Error('Google API script not found in HTML'));
+      return;
     }
+    let timeout = setTimeout(() => {
+      console.error('gapi load timed out after 60 seconds');
+      reject(new Error('Google API failed to load within 60 seconds'));
+    }, 60000); // 60-second timeout
+    script.onload = () => {
+      clearTimeout(timeout);
+      console.log('Google API script loaded');
+      resolve();
+    };
+    script.onerror = () => {
+      clearTimeout(timeout);
+      console.error('Google API script failed to load');
+      reject(new Error('Failed to load Google API script'));
+    };
+  });
+}
 
     // Upload file to Google Drive
-    function uploadToGoogleDrive(fileBlob, fileName) {
-      console.log('Uploading to Google Drive:', fileName);
-      return new Promise((resolve, reject) => {
-        const metadata = {
-          name: fileName,
-          mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-          parents: [FOLDER_ID]
-        };
-        const form = new FormData();
-        form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
-        form.append('file', fileBlob);
-        fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
-          method: 'POST',
-          headers: {
-            'Authorization': 'Bearer ' + gapi.auth.getToken().access_token
-          },
-          body: form
-        }).then(response => {
-          if (!response.ok) throw new Error(`Upload failed: ${response.statusText}`);
-          return response.json();
-        }).then(data => {
-          console.log('File uploaded to Google Drive:', data);
-          resolve(data);
-        }).catch(error => {
-          console.error('Upload error:', error);
-          reject(error);
-        });
-      });
-    }
+   function uploadToGoogleDrive(fileBlob, fileName) {
+  console.log('Uploading to Google Drive:', fileName);
+  return new Promise((resolve, reject) => {
+    const metadata = {
+      name: fileName,
+      mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      parents: [FOLDER_ID]
+    };
+    const form = new FormData();
+    form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+    form.append('file', fileBlob);
+    console.log('Form data prepared for upload');
+    fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + gapi.auth.getToken().access_token
+      },
+      body: form
+    }).then(response => {
+      if (!response.ok) {
+        console.error('Upload failed with status:', response.status, response.statusText);
+        throw new Error(`Upload failed: ${response.statusText}`);
+      }
+      return response.json();
+    }).then(data => {
+      console.log('File uploaded to Google Drive:', data);
+      resolve(data);
+    }).catch(error => {
+      console.error('Upload error:', error);
+      reject(error);
+    });
+  });
+}
 
     // Export logic
     console.log('Setting up export button listener...');
@@ -1702,6 +1676,16 @@
             console.error('Google Drive upload failed:', driveError);
             showStatus(`Google Drive upload failed: ${driveError.message}. Check your internet or Google API setup.`, 'error');
           }
+console.log('Loading Google API script...');
+const script = document.createElement('script');
+script.src = 'https://apis.google.com/js/api.js';
+script.onload = () => {
+  console.log('Google API script loaded successfully');
+};
+script.onerror = () => {
+  console.error('Failed to load Google API script');
+};
+document.head.appendChild(script);
 
           clearDateField();
         } catch (error) {
