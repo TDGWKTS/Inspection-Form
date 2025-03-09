@@ -1295,16 +1295,33 @@ const initDB = () => {
 };
 
 const setDefaultValues = () => {
-    const now = new Date();
-    document.querySelector('input[name="txtDate"]').value = now.toISOString().split('T')[0];
-    const defaultValues = {
-        'cmbInspector': 'I(TD)43', 'cmbWeather': 'Sunny', 'cmbCCTV': 'Normal', 'cmbWeightDis': 'Yes'
+        const now = new Date();
+        document.querySelector('input[name="txtDate"]').value = now.toISOString().split('T')[0];
+
+        const defaultValues = {
+            'cmbInspector': 'I(TD)43', 'cmbWeather': 'Sunny', 'cmbCCTV': 'Normal', 'cmbWeightDis': 'Yes',
+            'cmbPermitedW': 'Yes', 'cmboffQ': 'No', 'cmbtippingPermitedW': 'Yes', 'cmbtippingTraffic': 'Normal',
+            'cmbtippingCCTV': 'Normal', 'cmbGTW': 'Normal', 'cmbCurtain': 'Yes', 'cmbBefore': 'Normal',
+            'cmbAnaerobic': 'Normal', 'cmbFinal': 'Normal', 'cmbFilter': 'Normal', 'cmbBiogas': 'Normal',
+            'cmbPenstock': 'Open', 'cmbCleanliness': 'Yes', 'cmbMinutes': 'No', 'cmbHours': 'No',
+            'cmbPLC': 'Normal', 'cmbPreT': 'Normal', 'cmbPenstockChamber': 'Open', 'cmbAerobicS': 'Normal',
+            'cmbAnaerobicS': 'Normal', 'cmbPostT': 'Normal', 'cmbCent': 'Yes'
+        };
+
+        Object.entries(defaultValues).forEach(([name, value]) => {
+            const select = document.querySelector(`select[name="${name}"]`);
+            if (select) select.value = value;
+        });
+
+        const checkboxesToCheck = [
+            'chkScreen1', 'chkScreen3', 'chkDAF1', 'chkDAF2',
+            'chkCrane1', 'chkCrane2', 'chkWash1', 'chkWash2'
+        ];
+        checkboxesToCheck.forEach(name => {
+            const checkbox = document.querySelector(`input[name="${name}"]`);
+            if (checkbox) checkbox.checked = true;
+        });
     };
-    Object.entries(defaultValues).forEach(([name, value]) => {
-        const select = document.querySelector(`select[name="${name}"]`);
-        if (select) select.value = value;
-    });
-};
 
 const showPage = (pageNum) => {
     console.log(`Showing page ${pageNum}`);
@@ -1450,6 +1467,22 @@ document.getElementById('inspectionForm').addEventListener('submit', async (e) =
             timeInput.value = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
             data.txtTime = timeInput.value;
         }
+
+	const checkboxes = [
+                "chkWeightbridge1", "chkWeightbridge2", "chkWeightbridge3", "chkWeightbridge4",
+                "chktipping1", "chktipping2", "chkC1", "chkC2", "chkC3", "chkC4", "chkC5",
+                "chkC6", "chkC7", "chkC8", "chkC9", "chkC10", "chkScreen1", "chkScreen2",
+                "chkScreen3", "chkDAF1", "chkDAF2", "chkCrane1", "chkCrane2", "chkCHU1",
+                "chkCHU2", "chkLaiwan", "chkNgonshuen", "chkWash1", "chkWash2", "chkWash3",
+                "chkScrubber1", "chkScrubber2", "chkScrubber3", "chkScrubber4", "chkScrubber5",
+                "chkT300", "chkT401", "chkT402", "chkT403", "chkT404", "chkMF1", "chkMF2",
+                "chkMF3", "chkMF4", "chkMF5", "chkMF6"
+            ];
+
+            checkboxes.forEach(name => {
+                data[name] = formData.has(name) ? "true" : "false";
+            });
+
         const validationError = validateForm(data);
         if (validationError) {
             console.warn('Validation failed:', validationError);
