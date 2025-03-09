@@ -1509,6 +1509,7 @@ function initGoogleDrive() {
         const tokenClient = google.accounts.oauth2.initTokenClient({
             client_id: CLIENT_ID,
             scope: SCOPES,
+            redirect_uri: 'https://tdgwkts.github.io', // Replace with your GitHub Pages URL
             prompt: 'consent',
             callback: (tokenResponse) => {
                 if (tokenResponse.error) {
@@ -1689,51 +1690,50 @@ if (!exportBtn) {
                 "txt403Temp", "txt404Temp", "txt404pH", "timestamp"
             ];
 
+            const worksheetData = [headers, ...data.map(item => fieldNames.map(field => item[field] || ''))];
+            const ws = XLSX.utils.aoa_to_sheet(worksheetData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Inspections");
 
-                const worksheetData = [headers, ...data.map(item => fieldNames.map(field => item[field] || ''))];
-                const ws = XLSX.utils.aoa_to_sheet(worksheetData);
-                const wb = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(wb, ws, "Inspections");
+            const now = new Date();
+            const hktDate = new Date(now.getTime() + (8 * 60 * 60 * 1000));
+            const year = hktDate.getUTCFullYear();
+            const month = String(hktDate.getUTCMonth() + 1).padStart(2, '0');
+            const day = String(hktDate.getUTCDate()).padStart(2, '0');
+            const hours = String(hktDate.getUTCHours()).padStart(2, '0');
+            const minutes = String(hktDate.getUTCMinutes()).padStart(2, '0');
+            const seconds = String(hktDate.getUTCSeconds()).padStart(2, '0');
+            const timestamp = `${year}${month}${day}_${hours}${minutes}${seconds}`;
+            const fileName = `inspections_${timestamp}.xlsx`;
 
-                const now = new Date();
-                const hktDate = new Date(now.getTime() + (8 * 60 * 60 * 1000));
-                const year = hktDate.getUTCFullYear();
-                const month = String(hktDate.getUTCMonth() + 1).padStart(2, '0');
-                const day = String(hktDate.getUTCDate()).padStart(2, '0');
-                const hours = String(hktDate.getUTCHours()).padStart(2, '0');
-                const minutes = String(hktDate.getUTCMinutes()).padStart(2, '0');
-                const seconds = String(hktDate.getUTCSeconds()).padStart(2, '0');
-                const timestamp = `${year}${month}${day}_${hours}${minutes}${seconds}`;
-                const fileName = `inspections_${timestamp}.xlsx`;
+            console.log('Generating and downloading Excel file...');
+            XLSX.writeFile(wb, fileName);
+            console.log('Excel file downloaded:', fileName);
+            showStatus('Excel file saved locally', 'success');
 
-                console.log('Generating and downloading Excel file...');
-                XLSX.writeFile(wb, fileName);
-                console.log('Excel file downloaded:', fileName);
-                showStatus('Excel file saved locally', 'success');
-
-                try {
-                    console.log('Attempting Google Drive upload...');
-                    await waitForGapi();
-                    const accessToken = await initGoogleDrive();
-                    const fileBlob = new Blob([XLSX.write(wb, { bookType: 'xlsx', type: 'array' })], {
-                        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-                    });
-                    await uploadToGoogleDrive(fileBlob, fileName, accessToken);
-                    console.log('Google Drive upload complete');
-                    showStatus('Data exported to Excel and uploaded to Google Drive successfully!', 'success');
-                } catch (driveError) {
-                    console.error('Google Drive upload failed:', driveError);
-                    showStatus(`Google Drive upload failed: ${driveError.message}. Check your internet or Google API setup.`, 'error');
-                }
-            } catch (error) {
-                console.error('Export error:', error);
-                showStatus(`Export failed: ${error.message}`, 'error');
-            } finally {
-                console.log('Export process finished');
-                showLoading(currentPage, false);
+            try {
+                console.log('Attempting Google Drive upload...');
+                await waitForGapi();
+                const accessToken = await initGoogleDrive();
+                const fileBlob = new Blob([XLSX.write(wb, { bookType: 'xlsx', type: 'array' })], {
+                    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                });
+                await uploadToGoogleDrive(fileBlob, fileName, accessToken);
+                console.log('Google Drive upload complete');
+                showStatus('Data exported to Excel and uploaded to Google Drive successfully!', 'success');
+            } catch (driveError) {
+                console.error('Google Drive upload failed:', driveError);
+                showStatus(`Google Drive upload failed: ${driveError.message}. Check your internet or Google API setup.`, 'error');
             }
+        } catch (error) {
+            console.error('Export error:', error);
+            showStatus(`Export failed: ${error.message}`, 'error');
+        } finally {
+            console.log('Export process finished');
+            showLoading(currentPage, false);
         }
-    });
+    }
+});
 }
   </script>
 </body>
