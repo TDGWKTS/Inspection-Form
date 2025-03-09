@@ -1509,7 +1509,7 @@ function initGoogleDrive() {
         const tokenClient = google.accounts.oauth2.initTokenClient({
             client_id: CLIENT_ID,
             scope: SCOPES,
-            redirect_uri: 'https://tdgwkts.github.io', // Replace with your GitHub Pages URL
+            redirect_uri: 'https://tdgwkts.github.io', // Matches the authorized origin
             prompt: 'consent',
             callback: (tokenResponse) => {
                 if (tokenResponse.error) {
@@ -1547,37 +1547,29 @@ function uploadToGoogleDrive(fileBlob, fileName, accessToken) {
             parents: [FOLDER_ID]
         };
 
-        const request = gapi.client.request({
-            path: '/upload/drive/v3/files',
-            method: 'POST',
-            params: { uploadType: 'multipart' },
-            headers: {
-                'Content-Type': 'multipart/related; boundary=foo_bar_baz'
-            },
-            body: [
-                '--foo_bar_baz',
-                'Content-Type: application/json; charset=UTF-8',
-                '',
-                JSON.stringify(metadata),
-                '',
-                '--foo_bar_baz',
-                'Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                '',
-                fileBlob,
-                '',
-                '--foo_bar_baz--'
-            ].join('\r\n')
-        });
+        // Use a simpler upload method with XMLHttpRequest
+        const form = new FormData();
+        form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+        form.append('file', fileBlob);
 
-        request.execute(response => {
-            if (response.error) {
-                console.error('Upload error:', response.error);
-                reject(new Error(response.error.message));
-                return;
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart');
+        xhr.setRequestHeader('Authorization', `Bearer ${accessToken}`);
+        xhr.responseType = 'json';
+        xhr.onload = () => {
+            if (xhr.status === 200) {
+                console.log('File uploaded to Google Drive:', xhr.response);
+                resolve(xhr.response);
+            } else {
+                console.error('Upload error:', xhr.response);
+                reject(new Error(xhr.response.error.message));
             }
-            console.log('File uploaded to Google Drive:', response);
-            resolve(response);
-        });
+        };
+        xhr.onerror = () => {
+            console.error('Upload request failed');
+            reject(new Error('Upload request failed'));
+        };
+        xhr.send(form);
     });
 }
 
@@ -1663,77 +1655,93 @@ if (!exportBtn) {
                 "Marine Vessel", "Storm", "VWF", "Rundown", "101", "100", "313", "312", "410", "413",
                 "Public", "Road", "Marine", "Scrubbers", "VWS", "401 DO", "402 DO", "403 DO", "404 DO",
                 "401 Temp", "402 Temp", "403 Temp", "404 Temp", "404 pH", "Timestamp"
-            ];
+                ];
 
-            const fieldNames = [
-                "txtDate", "cmbInspector", "txtTime", "cmbWeather", "chkWeightbridge1", "chkWeightbridge2",
-                "chkWeightbridge3", "chkWeightbridge4", "cmbCCTV", "cmbWeightDis", "bridgeWasteV",
-                "bridgeWasteT", "cmbPermitedW", "cmboffQ", "chktipping1", "chktipping2", "tippingWasteV",
-                "tippingWasteT", "cmbtippingPermitedW", "cmbtippingTraffic", "cmbtippingCCTV", "txtfPress",
-                "chkC1", "txtC1", "chkC2", "txtC2", "chkMF1", "chkC3", "txtC3", "chkMF2", "chkC4",
-                "txtC4", "chkMF3", "chkC5", "txtC5", "chkMF4", "chkC6", "txtC6", "chkMF5", "chkC7",
-                "txtC7", "chkMF6", "chkC8", "txtC8", "chkC9", "txtC9", "chkC10", "txtC10", "chkScreen1",
-                "chkScreen2", "chkScreen3", "txt1A", "txt1B", "txt2A", "txt2B", "chkDAF1", "chkDAF2",
-                "cmbGTW", "chkCrane1", "chkCrane2", "chkCHU1", "chkCHU2", "txt145B", "txt550FV",
-                "txt155W", "txtOthers", "chkLaiwan", "chkNgonshuen", "chkWash1", "chkWash2", "chkWash3",
-                "cmbCleanliness", "cmbMinutes", "cmbHours", "cmbCurtain", "chkScrubber1", "chkScrubber2",
-                "chkScrubber3", "chkScrubber4", "chkScrubber5", "txtAcid1", "txtAcid2", "txtAcid4",
-                "txtAcid5", "txtAlk1", "txtAlk2", "txtAlk3", "txtAlk4", "txtAlk5", "txtORP1", "txtORP2",
-                "txtORP3", "txtORP4", "txtORP5", "cmbBefore", "cmbAnaerobic", "chkT300", "chkT401",
-                "chkT402", "chkT403", "chkT404", "cmbFinal", "cmbFilter", "cmbBiogas", "cmbPenstock",
-                "txtRemarks1", "txtRemarks2", "txtRemarks3", "txtRemarks4", "cmbPLC", "cmbPreT",
-                "cmbPenstockChamber", "cmbAerobicS", "txtAT401", "txtAT402", "txtAT403", "txtAT404",
-                "cmbAnaerobicS", "txtApH", "txtATemp", "txtADO", "txtABiogas", "cmbPostT", "cmbCent",
-                "txtWetsep", "txtMarineVessel", "txtStorm", "txtVWF", "txtRundown", "txt101", "txt100",
-                "txt313", "txt312", "txt410", "txt413", "txtPublic", "txtRoad", "txtMarine", "txtScrubbers",
-                "txtVWS", "txt401DO", "txt402DO", "txt403DO", "txt404DO", "txt401Temp", "txt402Temp",
-                "txt403Temp", "txt404Temp", "txt404pH", "timestamp"
-            ];
+                const fieldNames = [
+                    "txtDate", "cmbInspector", "txtTime", "cmbWeather", "chkWeightbridge1", "chkWeightbridge2",
+                    "chkWeightbridge3", "chkWeightbridge4", "cmbCCTV", "cmbWeightDis", "bridgeWasteV",
+                    "bridgeWasteT", "cmbPermitedW", "cmboffQ", "chktipping1", "chktipping2", "tippingWasteV",
+                    "tippingWasteT", "cmbtippingPermitedW", "cmbtippingTraffic", "cmbtippingCCTV", "txtfPress",
+                    "chkC1", "txtC1", "chkC2", "txtC2", "chkMF1", "chkC3", "txtC3", "chkMF2", "chkC4",
+                    "txtC4", "chkMF3", "chkC5", "txtC5", "chkMF4", "chkC6", "txtC6", "chkMF5", "chkC7",
+                    "txtC7", "chkMF6", "chkC8", "txtC8", "chkC9", "txtC9", "chkC10", "txtC10", "chkScreen1",
+                    "chkScreen2", "chkScreen3", "txt1A", "txt1B", "txt2A", "txt2B", "chkDAF1", "chkDAF2",
+                    "cmbGTW", "chkCrane1", "chkCrane2", "chkCHU1", "chkCHU2", "txt145B", "txt550FV",
+                    "txt155W", "txtOthers", "chkLaiwan", "chkNgonshuen", "chkWash1", "chkWash2", "chkWash3",
+                    "cmbCleanliness", "cmbMinutes", "cmbHours", "cmbCurtain", "chkScrubber1", "chkScrubber2",
+                    "chkScrubber3", "chkScrubber4", "chkScrubber5", "txtAcid1", "txtAcid2", "txtAcid4",
+                    "txtAcid5", "txtAlk1", "txtAlk2", "txtAlk3", "txtAlk4", "txtAlk5", "txtORP1", "txtORP2",
+                    "txtORP3", "txtORP4", "txtORP5", "cmbBefore", "cmbAnaerobic", "chkT300", "chkT401",
+                    "chkT402", "chkT403", "chkT404", "cmbFinal", "cmbFilter", "cmbBiogas", "cmbPenstock",
+                    "txtRemarks1", "txtRemarks2", "txtRemarks3", "txtRemarks4", "cmbPLC", "cmbPreT",
+                    "cmbPenstockChamber", "cmbAerobicS", "txtAT401", "txtAT402", "txtAT403", "txtAT404",
+                    "cmbAnaerobicS", "txtApH", "txtATemp", "txtADO", "txtABiogas", "cmbPostT", "cmbCent",
+                    "txtWetsep", "txtMarineVessel", "txtStorm", "txtVWF", "txtRundown", "txt101", "txt100",
+                    "txt313", "txt312", "txt410", "txt413", "txtPublic", "txtRoad", "txtMarine", "txtScrubbers",
+                    "txtVWS", "txt401DO", "txt402DO", "txt403DO", "txt404DO", "txt401Temp", "txt402Temp",
+                    "txt403Temp", "txt404Temp", "txt404pH", "timestamp"
+                ];
 
-            const worksheetData = [headers, ...data.map(item => fieldNames.map(field => item[field] || ''))];
-            const ws = XLSX.utils.aoa_to_sheet(worksheetData);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Inspections");
+                const worksheetData = [headers, ...data.map(item => fieldNames.map(field => item[field] || ''))];
+                const ws = XLSX.utils.aoa_to_sheet(worksheetData);
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "Inspections");
 
-            const now = new Date();
-            const hktDate = new Date(now.getTime() + (8 * 60 * 60 * 1000));
-            const year = hktDate.getUTCFullYear();
-            const month = String(hktDate.getUTCMonth() + 1).padStart(2, '0');
-            const day = String(hktDate.getUTCDate()).padStart(2, '0');
-            const hours = String(hktDate.getUTCHours()).padStart(2, '0');
-            const minutes = String(hktDate.getUTCMinutes()).padStart(2, '0');
-            const seconds = String(hktDate.getUTCSeconds()).padStart(2, '0');
-            const timestamp = `${year}${month}${day}_${hours}${minutes}${seconds}`;
-            const fileName = `inspections_${timestamp}.xlsx`;
+                const now = new Date();
+                const hktDate = new Date(now.getTime() + (8 * 60 * 60 * 1000));
+                const year = hktDate.getUTCFullYear();
+                const month = String(hktDate.getUTCMonth() + 1).padStart(2, '0');
+                const day = String(hktDate.getUTCDate()).padStart(2, '0');
+                const hours = String(hktDate.getUTCHours()).padStart(2, '0');
+                const minutes = String(hktDate.getUTCMinutes()).padStart(2, '0');
+                const seconds = String(hktDate.getUTCSeconds()).padStart(2, '0');
+                const timestamp = `${year}${month}${day}_${hours}${minutes}${seconds}`;
+                const fileName = `inspections_${timestamp}.xlsx`;
 
-            console.log('Generating and downloading Excel file...');
-            XLSX.writeFile(wb, fileName);
-            console.log('Excel file downloaded:', fileName);
-            showStatus('Excel file saved locally', 'success');
-
-            try {
-                console.log('Attempting Google Drive upload...');
-                await waitForGapi();
-                const accessToken = await initGoogleDrive();
+                // Generate the fileBlob once and use it for both local save and upload
                 const fileBlob = new Blob([XLSX.write(wb, { bookType: 'xlsx', type: 'array' })], {
                     type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
                 });
-                await uploadToGoogleDrive(fileBlob, fileName, accessToken);
-                console.log('Google Drive upload complete');
-                showStatus('Data exported to Excel and uploaded to Google Drive successfully!', 'success');
-            } catch (driveError) {
-                console.error('Google Drive upload failed:', driveError);
-                showStatus(`Google Drive upload failed: ${driveError.message}. Check your internet or Google API setup.`, 'error');
+
+                // Verify the fileBlob has data
+                console.log('fileBlob size:', fileBlob.size);
+                if (fileBlob.size === 0) {
+                    throw new Error('fileBlob is empty');
+                }
+
+                // Save locally
+                console.log('Generating and downloading Excel file...');
+                const url = window.URL.createObjectURL(fileBlob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = fileName;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(url);
+                console.log('Excel file downloaded:', fileName);
+                showStatus('Excel file saved locally', 'success');
+
+                try {
+                    console.log('Attempting Google Drive upload...');
+                    await waitForGapi();
+                    const accessToken = await initGoogleDrive();
+                    await uploadToGoogleDrive(fileBlob, fileName, accessToken);
+                    console.log('Google Drive upload complete');
+                    showStatus('Data exported to Excel and uploaded to Google Drive successfully!', 'success');
+                } catch (driveError) {
+                    console.error('Google Drive upload failed:', driveError);
+                    showStatus(`Google Drive upload failed: ${driveError.message}. Check your internet or Google API setup.`, 'error');
+                }
+            } catch (error) {
+                console.error('Export error:', error);
+                showStatus(`Export failed: ${error.message}`, 'error');
+            } finally {
+                console.log('Export process finished');
+                showLoading(currentPage, false);
             }
-        } catch (error) {
-            console.error('Export error:', error);
-            showStatus(`Export failed: ${error.message}`, 'error');
-        } finally {
-            console.log('Export process finished');
-            showLoading(currentPage, false);
         }
-    }
-});
+    });
 }
   </script>
 </body>
