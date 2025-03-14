@@ -6,16 +6,327 @@
   <title>Daily Inspection Form (Local Storage - 149 Fields)</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    /* Your existing CSS remains unchanged */
     body {
        background-color: #f0f2f5;
-       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-       padding: 15px;
-       margin: 0;
-       overflow-x: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 15px; /* Reduced padding for mobile */
+    margin: 0;
+    overflow-x: hidden;
+}
+
+.page-container {
+    background-color: #ffffff;
+    padding: 15px; /* Reduced padding for mobile */
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    width: 100%; /* Changed from fixed 1200px */
+    max-width: 1200px; /* Added max-width instead */
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    position: relative;
     }
-    /* ... [Rest of your existing CSS] ... */
-  </style>
+    .page-header {
+      color: #ffffff;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 25px;
+      font-size: 1.6rem;
+      background-color: #4a90e2;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    .form-label {
+      font-weight: 500;
+      color: #444;
+      margin-bottom: 5px;
+      display: block;
+      font-size: 0.95rem;
+      width: 140px;
+      float: left;
+      margin-right: 15px;
+      line-height: 35px;
+    }
+    .form-control, .form-select {
+      border-radius: 5px;
+      border: 1px solid #d0d0d0;
+      padding: 0 12px;
+      font-size: 0.95rem;
+      width: 220px;
+      height: 35px;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
+      display: inline-block;
+      vertical-align: middle;
+      background-color: #fafafa;
+      color: #333;
+      box-sizing: border-box;
+      transition: border-color 0.2s;
+      line-height: 33px;
+      text-align: left;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    .form-select:focus {
+      border-color: #4a90e2;
+      outline: none;
+    }
+    .form-check-input {
+      transform: scale(1.4);
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+    .form-check-label {
+      color: #444;
+      font-size: 0.9rem;
+      line-height: 35px;
+      vertical-align: middle;
+    }
+    .navigation-buttons {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 30px;
+      gap: 10px;
+    }
+    .btn-previous {
+      background-color: #f39c12;
+      border: none;
+      padding: 10px 25px;
+      font-size: 1rem;
+      border-radius: 5px;
+      color: white;
+      transition: background-color 0.3s;
+    }
+    .btn-previous:hover {
+      background-color: #e67e22;
+    }
+    .btn-next, .btn-save {
+      background-color: #2ecc71;
+      border: none;
+      padding: 10px 25px;
+      font-size: 1rem;
+      border-radius: 5px;
+      color: white;
+      transition: background-color 0.3s;
+    }
+    .btn-next:hover, .btn-save:hover {
+      background-color: #27ae60;
+    }
+    #status {
+      text-align: center;
+      font-weight: 500;
+      margin-top: 15px;
+      font-size: 1rem;
+    }
+    .row {
+      margin-bottom: 15px;
+      clear: both;
+    }
+    .hidden {
+      display: none;
+    }
+    .field-group {
+      margin-bottom: 10px;
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .section-header {
+      font-weight: 600;
+      color: #444;
+      margin-top: 20px;
+      margin-bottom: 15px;
+      font-size: 1.2rem;
+      padding: 0 0 4px 0;
+      background-color: transparent;
+      clear: both;
+      position: relative;
+    }
+    .section-header::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 3px;
+      background-color: #2ecc71;
+    }
+    .section-group {
+      background-color: #f9f9f9;
+      padding: 15px;
+      border: 1px solid #e8ecef;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+    .btn-export {
+      background-color: #2980b9;
+      color: white;
+      padding: 12px 30px;
+      border-radius: 5px;
+      border: none;
+      margin: 20px auto;
+      display: block;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.3s;
+    }
+    .btn-export:hover { background-color: #1f6391; }
+    .loading-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid #fff;
+      border-top-color: #2ecc71;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    /* Enhanced Media Queries */
+@media (max-width: 1024px) {
+    .page-container {
+        padding: 15px;
+    }
+    
+    .form-label {
+        width: 120px;
+        margin-right: 10px;
+    }
+    
+    .form-control, .form-select {
+        width: calc(100% - 130px);
+    }
+}
+
+@media (max-width: 768px) {
+    .page-container {
+        padding: 10px;
+    }
+    
+    .form-label {
+        width: 100%;
+        float: none;
+        margin-right: 0;
+        line-height: 1.5;
+        margin-bottom: 5px;
+    }
+    
+    .form-control, .form-select {
+        width: 100%;
+        font-size: 0.9rem;
+    }
+    
+    .field-group {
+        margin-bottom: 15px;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .navigation-buttons {
+        flex-direction: column;
+        gap: 10px;
+        justify-content: center;
+        align-items: stretch;
+    }
+    
+    .btn-previous, .btn-next, .btn-save {
+        width: 100%;
+        padding: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+    
+    .page-header {
+        font-size: 1.2rem;
+        padding: 8px;
+    }
+    
+    .section-header {
+        font-size: 1rem;
+    }
+    
+    .form-control, .form-select {
+        height: 40px;
+        font-size: 0.85rem;
+    }
+    
+    .form-check-input {
+        transform: scale(1.2);
+    }
+    
+    .btn-export {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Landscape orientation specific adjustments */
+@media (max-width: 896px) and (orientation: landscape) {
+    .page-container {
+        padding: 10px;
+    }
+    
+    .form-label {
+        width: 100px;
+        font-size: 0.85rem;
+    }
+    
+    .form-control, .form-select {
+        width: calc(100% - 110px);
+        height: 32px;
+        font-size: 0.85rem;
+    }
+    
+    .field-group {
+        margin-bottom: 8px;
+    }
+    
+    .navigation-buttons {
+        flex-direction: row;
+        gap: 5px;
+    }
+    
+    .btn-previous, .btn-next, .btn-save {
+        padding: 8px 15px;
+        font-size: 0.9rem;
+    }
+    
+    .section-header {
+        margin-top: 15px;
+        margin-bottom: 10px;
+    }
+}
+
+/* Small phones in landscape */
+@media (max-width: 667px) and (orientation: landscape) {
+    .form-label {
+        width: 80px;
+    }
+    
+    .form-control, .form-select {
+        width: calc(100% - 90px);
+    }
+    
+    .page-header {
+        font-size: 1.1rem;
+    }
+}
+</style>
 </head>
 <body>
   <div class="container">
@@ -57,28 +368,718 @@
             </select>
           </div>
         </div>
-        <!-- ... [Rest of Page 1 content unchanged] ... -->
+        <div class="row">
+          <div class="col-md-12 field-group">
+            <h3 class="section-header">Weight Bridges in Operation</h3>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-3 field-group">
+            <div class="form-label">No. 1</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chkWeightbridge1" checked>
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+          <div class="col-md-3 field-group">
+            <div class="form-label">No. 2</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chkWeightbridge2" checked>
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+          <div class="col-md-3 field-group">
+            <div class="form-label">No. 3</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chkWeightbridge3" checked>
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+          <div class="col-md-3 field-group">
+            <div class="form-label">No. 4</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chkWeightbridge4">
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 field-group">
+            <div class="form-label">CCTV Recording</div>
+            <select class="form-select" name="cmbCCTV">
+              <option value="Normal">Normal</option>
+              <option value="Malfunction">Malfunction</option>
+            </select>
+          </div>
+          <div class="col-md-6 field-group">
+            <div class="form-label">Weight Display</div>
+            <select class="form-select" name="cmbWeightDis">
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 field-group">
+            <h3 class="section-header">Inspection of Waste Data Input</h3>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 field-group">
+            <div class="form-label">Vehicle No.</div>
+            <input type="text" class="form-control" name="bridgeWasteV">
+          </div>
+          <div class="col-md-6 field-group">
+            <div class="form-label">Type / Origin</div>
+            <input type="text" class="form-control" name="bridgeWasteT">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 field-group">
+            <div class="form-label">Permitted Waste</div>
+            <select class="form-select" name="cmbPermitedW">
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+          <div class="col-md-6 field-group">
+            <div class="form-label">Off-site Queue</div>
+            <select class="form-select" name="cmboffQ">
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 field-group">
+            <div class="form-label">Inspected by EPD</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chktipping1" checked>
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+          <div class="col-md-6 field-group">
+            <div class="form-label">Inspected by CHEC</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chktipping2">
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 field-group">
+            <h3 class="section-header">Waste Inspection (Check >5%)</h3>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4 field-group">
+            <div class="form-label">Vehicle No.</div>
+            <input type="text" class="form-control" name="tippingWasteV">
+          </div>
+          <div class="col-md-4 field-group">
+            <div class="form-label">Type</div>
+            <input type="text" class="form-control" name="tippingWasteT">
+          </div>
+          <div class="col-md-4 field-group">
+            <div class="form-label">Permitted Waste</div>
+            <select class="form-select" name="cmbtippingPermitedW">
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 field-group">
+            <div class="form-label">Traffic Control Signal</div>
+            <select class="form-select" name="cmbtippingTraffic">
+              <option value="Normal">Normal</option>
+              <option value="Abnormal">Abnormal</option>
+            </select>
+          </div>
+          <div class="col-md-6 field-group">
+            <div class="form-label">CCTV System</div>
+            <select class="form-select" name="cmbtippingCCTV">
+              <option value="Normal">Normal</option>
+              <option value="Malfunction">Malfunction</option>
+            </select>
+          </div>
+        </div>
+<div class="row">
+          <div class="col-md-3 field-group">
+            <div class="form-label">145B</div>
+            <input type="text" class="form-control" name="txt145B">
+          </div>
+          <div class="col-md-3 field-group">
+            <div class="form-label">550FV</div>
+            <input type="text" class="form-control" name="txt550FV">
+          </div>
+          <div class="col-md-3 field-group">
+            <div class="form-label">155WV</div>
+            <input type="text" class="form-control" name="txt155W">
+          </div>
+          <div class="col-md-3 field-group">
+            <div class="form-label">Others</div>
+            <input type="text" class="form-control" name="txtOthers">
+          </div>
+        </div>
         <div class="navigation-buttons">
           <button type="button" class="btn-next" id="next1">Next</button>
         </div>
       </div>
 
-      <!-- Page 2: Tipping Operation -->
+
+<!-- Page 2: Tipping Operation -->
       <div id="page2" class="page-container hidden">
         <div class="loading-overlay" id="loading2"><div class="spinner"></div></div>
         <h2 class="page-header">Vehicle Wash & Tank Farm</h2>
-        <!-- ... [Rest of Page 2 content unchanged] ... -->
+        <div class="row">
+          <div class="col-md-12 field-group">
+            <h3 class="section-header">Vehicle Wash</h3>
+          </div>
+        </div>
+	<div class="row">
+          <div class="col-md-4 field-group">
+            <div class="form-label">Vehicle Wash 1</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chkWash1">
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+          <div class="col-md-4 field-group">
+            <div class="form-label">Vehicle Wash 2</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chkWash2">
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+          <div class="col-md-4 field-group">
+            <div class="form-label">Vehicle Wash 3</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chkWash3">
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+	</div>
+<div class="row">
+          <div class="col-md-12 field-group">
+            <h3 class="section-header">GTW Area</h3>
+          </div>
+        </div>
+ <div class="row">
+          <div class="col-md-4 field-group">
+            <div class="form-label">Screen 1</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chkScreen1">
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+          <div class="col-md-4 field-group">
+            <div class="form-label">Screen 2</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chkScreen2">
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+          <div class="col-md-4 field-group">
+            <div class="form-label">Screen 3</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chkScreen3">
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-3 field-group">
+            <div class="form-label">Tank 1A</div>
+            <input type="text" class="form-control" name="txt1A">
+          </div>
+          <div class="col-md-3 field-group">
+            <div class="form-label">Tank 1B</div>
+            <input type="text" class="form-control" name="txt1B">
+          </div>
+          <div class="col-md-3 field-group">
+            <div class="form-label">Tank 2A</div>
+            <input type="text" class="form-control" name="txt2A">
+          </div>
+          <div class="col-md-3 field-group">
+            <div class="form-label">Tank 2B</div>
+            <input type="text" class="form-control" name="txt2B">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4 field-group">
+            <div class="form-label">DAF 1</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chkDAF1">
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+          <div class="col-md-4 field-group">
+            <div class="form-label">DAF 2</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chkDAF2">
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+          <div class="col-md-4 field-group">
+            <div class="form-label">GTW Area</div>
+            <select class="form-select" name="cmbGTW">
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+        </div>        
+
+     <div class="row">
+          <div class="col-md-12 field-group">
+            <h3 class="section-header">Tank Farm Meters</h3>
+          </div>
+        </div>
+                <div class="row">
+	<div class="col-md-3 field-group">
+            <div class="form-label">Storm</div>
+            <input type="text" class="form-control" name="txtStorm">
+          </div>
+		<div class="col-md-3 field-group">
+            <div class="form-label">313</div>
+            <input type="text" class="form-control" name="txt313">
+          </div>
+          <div class="col-md-3 field-group">
+            <div class="form-label">312</div>
+            <input type="text" class="form-control" name="txt312">
+          </div>
+          <div class="col-md-3 field-group">
+            <div class="form-label">101</div>
+            <input type="text" class="form-control" name="txt101">
+          </div>
+		<div class="col-md-3 field-group">
+            <div class="form-label">410</div>
+            <input type="text" class="form-control" name="txt410">
+          </div>
+          <div class="col-md-3 field-group">
+            <div class="form-label">100</div>
+            <input type="text" class="form-control" name="txt100">
+          </div>
+ <div class="col-md-3 field-group">
+            <div class="form-label">Wetsep</div>
+            <input type="text" class="form-control" name="txtWetsep">
+          </div>
+          <div class="col-md-3 field-group">
+            <div class="form-label">Marine Vessel</div>
+            <input type="text" class="form-control" name="txtMarineVessel">
+          </div>
+
+ <div class="row">
+        
+          <div class="col-md-4 field-group">
+            <div class="form-label">AnaerobicS</div>
+            <select class="form-select" name="cmbAnaerobicS">
+              <option value="Normal">Normal</option>
+              <option value="Abnormal">Abnormal</option>
+            </select>
+          </div>
+        </div>
+<div class="row">         
+<div class="col-md-4 field-group">
+            <div class="form-label">ApH</div>
+            <input type="text" class="form-control" name="txtApH">
+          </div>
+          <div class="col-md-4 field-group">
+            <div class="form-label">ATemp</div>
+            <input type="text" class="form-control" name="txtATemp">
+          </div>
+          <div class="col-md-4 field-group">
+            <div class="form-label">ADO</div>
+            <input type="text" class="form-control" name="txtADO">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4 field-group">
+            <div class="form-label">ABiogas</div>
+            <input type="text" class="form-control" name="txtABiogas">
+          </div>
+          <div class="col-md-4 field-group">
+            <div class="form-label">Post-Treatment</div>
+            <select class="form-select" name="cmbPostT">
+              <option value="Normal">Normal</option>
+              <option value="Abnormal">Abnormal</option>
+            </select>
+          </div>
+          <div class="col-md-4 field-group">
+            <div class="form-label">Centrifuge</div>
+            <select class="form-select" name="cmbCent">
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+        </div>
+<div class="row">
+          <div class="col-md-4 field-group">
+            <div class="form-label">Lai Wan</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chkLaiwan">
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+          <div class="col-md-4 field-group">
+            <div class="form-label">Ngon Shuen</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chkNgonshuen">
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+        </div>
+
+<div class="row">
+          <div class="col-md-12 field-group">
+            <h3 class="section-header">Tank Farm & Wastewaster Meters</h3>
+          </div>
+        </div>
+
+<div class="row">
+          <div class="col-md-3 field-group">
+            <div class="form-label">PLC Condition</div>
+            <select class="form-select" name="cmbPLC">
+              <option value="Normal">Normal</option>
+              <option value="Abnormal">Abnormal</option>
+            </select>
+          </div>
+          <div class="col-md-3 field-group">
+            <div class="form-label">Pre Treatment</div>
+            <select class="form-select" name="cmbPreT">
+              <option value="Normal">Normal</option>
+              <option value="Abnormal">Abnormal</option>
+            </select>
+          </div>
+          <div class="col-md-3 field-group">
+            <div class="form-label">Penstock Status</div>
+            <select class="form-select" name="cmbPenstockChamber">
+              <option value="Open">Open</option>
+              <option value="Close">Close</option>
+            </select>
+          </div>            
+        
+          <div class="col-md-4 field-group">
+            <div class="form-label">AnaerobicS</div>
+            <select class="form-select" name="cmbAnaerobicS">
+              <option value="Normal">Normal</option>
+              <option value="Abnormal">Abnormal</option>
+            </select>
+          </div>
+</div>
+<div class="row">
+                      
+ 	<div class="col-md-3 field-group">
+            <div class="form-label">413</div>
+            <input type="text" class="form-control" name="txt413">
+          </div>
+     	 <div class="col-md-3 field-group">
+            <div class="form-label">VWF</div>
+            <input type="text" class="form-control" name="txtVWF">
+          </div>
+          <div class="col-md-3 field-group">
+            <div class="form-label">Rundown</div>
+            <input type="text" class="form-control" name="txtRundown">
+          </div>
+        </div>
+
+<div class="row">
+          <div class="col-md-4 field-group">
+            <div class="form-label">AT401</div>
+            <input type="text" class="form-control" name="txtAT401">
+          </div>
+<div class="col-md-4 field-group">
+            <div class="form-label">401 DO</div>
+            <input type="text" class="form-control" name="txt401DO">
+          </div>
+<div class="col-md-4 field-group">
+            <div class="form-label">401 Temp</div>
+            <input type="text" class="form-control" name="txt401Temp">
+          </div>
+</div>
+	<div class="row">
+          <div class="col-md-4 field-group">
+            <div class="form-label">AT402</div>
+            <input type="text" class="form-control" name="txtAT402">
+          </div>
+	<div class="col-md-4 field-group">
+            <div class="form-label">402 DO</div>
+            <input type="text" class="form-control" name="txt402DO">
+          </div>
+	<div class="col-md-4 field-group">
+            <div class="form-label">402 Temp</div>
+            <input type="text" class="form-control" name="txt402Temp">
+          </div>
+	</div>
+	<div class="row">
+          <div class="col-md-4 field-group">
+            <div class="form-label">AT403</div>
+            <input type="text" class="form-control" name="txtAT403">
+          </div>
+	<div class="col-md-4 field-group">
+            <div class="form-label">403 DO</div>
+            <input type="text" class="form-control" name="txt403DO">
+          </div>
+	<div class="col-md-4 field-group">
+            <div class="form-label">403 Temp</div>
+            <input type="text" class="form-control" name="txt403Temp">
+          </div>
+	</div>
+	<div class="row">
+          <div class="col-md-4 field-group">
+            <div class="form-label">AT404</div>
+            <input type="text" class="form-control" name="txtAT404">
+          </div>
+	<div class="col-md-4 field-group">
+            <div class="form-label">404 DO</div>
+            <input type="text" class="form-control" name="txt404DO">
+          </div>
+	<div class="col-md-4 field-group">
+            <div class="form-label">404 Temp</div>
+            <input type="text" class="form-control" name="txt404Temp">
+          </div>
+
+          <div class="col-md-4 field-group">
+            <div class="form-label">404 pH</div>
+            <input type="text" class="form-control" name="txt404pH">
+          </div>
+	</div>
+	</div>
         <div class="navigation-buttons">
           <button type="button" class="btn-previous" id="prev2">Previous</button>
           <button type="button" class="btn-next" id="next2">Next</button>
         </div>
       </div>
 
+
+
+
       <!-- Page 3: Air Monitoring -->
       <div id="page3" class="page-container hidden">
         <div class="loading-overlay" id="loading3"><div class="spinner"></div></div>
         <h2 class="page-header">Air Monitoring</h2>
-        <!-- ... [Rest of Page 3 content unchanged] ... -->
+        
+
+<div class="row">
+          <div class="col-md-12 field-group">
+            <h3 class="section-header">Compactors & Equipment</h3>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4 field-group">
+            <div class="form-label">Filter Press</div>
+            <input type="text" class="form-control" name="txtfPress">
+          </div>
+          <div class="col-md-4 field-group">
+            <div class="form-label">C1</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chkC1">
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+          <div class="col-md-4 field-group">
+            <div class="form-label">Container No. (C1)</div>
+            <input type="text" class="form-control" name="txtC1" value="---">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4 field-group">
+            <div class="form-label">C2</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chkC2" checked>
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+          <div class="col-md-4 field-group">
+            <div class="form-label">Container No. (C2)</div>
+            <input type="text" class="form-control" name="txtC2">
+          </div>
+          <div class="col-md-4 field-group">
+            <div class="form-label">MF1</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chkMF1" checked>
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4 field-group">
+            <div class="form-label">C3</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chkC3" checked>
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+          <div class="col-md-4 field-group">
+            <div class="form-label">Container No. (C3)</div>
+            <input type="text" class="form-control" name="txtC3">
+          </div>
+          <div class="col-md-4 field-group">
+            <div class="form-label">MF2</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chkMF2" checked>
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4 field-group">
+            <div class="form-label">C4</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chkC4" checked>
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+          <div class="col-md-4 field-group">
+            <div class="form-label">Container No. (C4)</div>
+            <input type="text" class="form-control" name="txtC4">
+          </div>
+          <div class="col-md-4 field-group">
+            <div class="form-label">MF3</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chkMF3" checked>
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4 field-group">
+            <div class="form-label">C5</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chkC5" checked>
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+          <div class="col-md-4 field-group">
+            <div class="form-label">Container No. (C5)</div>
+            <input type="text" class="form-control" name="txtC5">
+          </div>
+          <div class="col-md-4 field-group">
+            <div class="form-label">MF4</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chkMF4" checked>
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4 field-group">
+            <div class="form-label">C6</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chkC6" checked>
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+          <div class="col-md-4 field-group">
+            <div class="form-label">Container No. (C6)</div>
+            <input type="text" class="form-control" name="txtC6">
+          </div>
+          <div class="col-md-4 field-group">
+            <div class="form-label">MF5</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chkMF5" checked>
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4 field-group">
+            <div class="form-label">C7</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chkC7" checked>
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+          <div class="col-md-4 field-group">
+            <div class="form-label">Container No. (C7)</div>
+            <input type="text" class="form-control" name="txtC7">
+          </div>
+          <div class="col-md-4 field-group">
+            <div class="form-label">MF6</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chkMF6" checked>
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4 field-group">
+            <div class="form-label">C8</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chkC8" checked>
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+          <div class="col-md-4 field-group">
+            <div class="form-label">Container No. (C8)</div>
+            <input type="text" class="form-control" name="txtC8">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4 field-group">
+            <div class="form-label">C9</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chkC9" checked>
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+          <div class="col-md-4 field-group">
+            <div class="form-label">Container No. (C9)</div>
+            <input type="text" class="form-control" name="txtC9">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4 field-group">
+            <div class="form-label">C10</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chkC10" checked>
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+          <div class="col-md-4 field-group">
+            <div class="form-label">Container No. (C10)</div>
+            <input type="text" class="form-control" name="txtC10">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 field-group">
+            <h3 class="section-header">Crane</h3>
+          </div>
+        </div>
+ <div class="row">
+          <div class="col-md-4 field-group">
+            <div class="form-label">Crane 1</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chkCrane1">
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+          <div class="col-md-4 field-group">
+            <div class="form-label">Crane 2</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chkCrane2">
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+       
+ <div class="row">
+          <div class="col-md-4 field-group">
+            <div class="form-label">CHU 1</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chkCHU1">
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+          <div class="col-md-4 field-group">
+            <div class="form-label">CHU 2</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chkCHU2">
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+        </div>
+</div>
+
         <div class="navigation-buttons">
           <button type="button" class="btn-previous" id="prev3">Previous</button>
           <button type="button" class="btn-next" id="next3">Next</button>
@@ -88,9 +1089,258 @@
       <!-- Page 4: Meter Reading -->
       <div id="page4" class="page-container hidden">
         <div class="loading-overlay" id="loading4"><div class="spinner"></div></div>
-        <h2 class="page-header">Air Monitoring</h2>
-        <!-- ... [Rest of Page 4 content unchanged] ... -->
-        <div class="navigation-buttons">
+             
+	<h2 class="page-header">Air Monitoring</h2>
+        <div class="row">
+          <div class="col-md-4 field-group">
+            <div class="form-label">Air Curtain</div>
+            <select class="form-select" name="cmbCurtain">
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-2 field-group">
+            <div class="form-label">Scrubber 1</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chkScrubber1">
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+          <div class="col-md-2 field-group">
+            <div class="form-label">Scrubber 2</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chkScrubber2">
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+          <div class="col-md-2 field-group">
+            <div class="form-label">Scrubber 3</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chkScrubber3">
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+          <div class="col-md-2 field-group">
+            <div class="form-label">Scrubber 4</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chkScrubber4">
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+          <div class="col-md-2 field-group">
+            <div class="form-label">Scrubber 5</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chkScrubber5">
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-3 field-group">
+            <div class="form-label">Acid Stage 1</div>
+            <input type="text" class="form-control" name="txtAcid1">
+          </div>
+	<div class="col-md-3 field-group">
+            <div class="form-label">Alk Stage 1</div>
+            <input type="text" class="form-control" name="txtAlk1">
+          </div>
+	<div class="col-md-3 field-group">
+            <div class="form-label">ORP Range 1</div>
+            <input type="text" class="form-control" name="txtORP1">
+          </div>
+        </div>
+         <div class="row">
+          <div class="col-md-3 field-group">
+            <div class="form-label">Acid Stage 2</div>
+            <input type="text" class="form-control" name="txtAcid2">
+          </div>
+	<div class="col-md-3 field-group">
+            <div class="form-label">Alk Stage 2</div>
+            <input type="text" class="form-control" name="txtAlk2">
+          </div>
+	<div class="col-md-3 field-group">
+            <div class="form-label">ORP Range 2</div>
+            <input type="text" class="form-control" name="txtORP2">
+          </div>
+        </div>
+         <div class="row">
+          <div class="col-md-3 field-group">
+          	   <div class="form-label">Alk Stage 3</div>
+            <input type="text" class="form-control" name="txtAlk3">
+          </div>
+	<div class="col-md-4 field-group">
+            <div class="form-label">ORP Range 3</div>
+            <input type="text" class="form-control" name="txtORP3">
+          </div>
+        </div>
+ <div class="row">
+          <div class="col-md-3 field-group">
+            <div class="form-label">Acid Stage 4</div>
+            <input type="text" class="form-control" name="txtAcid4">
+          </div>
+	<div class="col-md-3 field-group">
+            <div class="form-label">Alk Stage 4</div>
+            <input type="text" class="form-control" name="txtAlk4">
+          </div>
+	<div class="col-md-3 field-group">
+            <div class="form-label">ORP Range 4</div>
+            <input type="text" class="form-control" name="txtORP4">
+          </div>
+        </div>
+ <div class="row">
+          <div class="col-md-3 field-group">
+            <div class="form-label">Acid Stage 5</div>
+            <input type="text" class="form-control" name="txtAcid5">
+          </div>
+	<div class="col-md-3 field-group">
+            <div class="form-label">Alk Stage 5</div>
+            <input type="text" class="form-control" name="txtAlk5">
+          </div>
+	<div class="col-md-3 field-group">
+            <div class="form-label">ORP Range 5</div>
+            <input type="text" class="form-control" name="txtORP5">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-3 field-group">
+            <div class="form-label">Before Treatment</div>
+            <select class="form-select" name="cmbBefore">
+              <option value="Normal">Normal</option>
+              <option value="Abnormal">Abnormal</option>
+            </select>
+          </div>
+          <div class="col-md-3 field-group">
+            <div class="form-label">Anaerobic Tanks</div>
+            <select class="form-select" name="cmbAnaerobic">
+              <option value="Normal">Normal</option>
+              <option value="Abnormal">Abnormal</option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 field-group">
+            <h3 class="section-header">Water Monitoring</h3>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-2 field-group">
+            <div class="form-label">T300</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chkT300" checked>
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+          <div class="col-md-2 field-group">
+            <div class="form-label">T401</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chkT401" checked>
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+          <div class="col-md-2 field-group">
+            <div class="form-label">T402</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chkT402" checked>
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+          <div class="col-md-2 field-group">
+            <div class="form-label">T403</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chkT403" checked>
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+          <div class="col-md-2 field-group">
+            <div class="form-label">T404</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chkT404" checked>
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4 field-group">
+            <div class="form-label">Final Clarifier</div>
+            <select class="form-select" name="cmbFinal">
+              <option value="Normal">Normal</option>
+              <option value="Abnormal">Abnormal</option>
+            </select>
+          </div>
+          <div class="col-md-4 field-group">
+            <div class="form-label">Filter Press</div>
+            <select class="form-select" name="cmbFilter">
+              <option value="Normal">Normal</option>
+              <option value="Idle">Idle</option>
+            </select>
+          </div>
+          <div class="col-md-4 field-group">
+            <div class="form-label">Biogas Tank</div>
+            <select class="form-select" name="cmbBiogas">
+              <option value="Normal">Normal</option>
+              <option value="Full">Full</option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4 field-group">
+            <div class="form-label">Penstock</div>
+            <select class="form-select" name="cmbPenstock">
+              <option value="Open">Open</option>
+              <option value="Close">Close</option>
+            </select>
+          </div>
+        </div>
+ <div class="row">
+	<div class="col-md-3 field-group">
+            <div class="form-label">Marine</div>
+            <input type="text" class="form-control" name="txtMarine">
+          </div>
+          <div class="col-md-3 field-group">
+            <div class="form-label">Public</div>
+            <input type="text" class="form-control" name="txtPublic">
+          </div>
+	<div class="col-md-3 field-group">
+            <div class="form-label">VWS</div>
+            <input type="text" class="form-control" name="txtVWS">
+          </div>
+          <div class="col-md-3 field-group">
+            <div class="form-label">Road</div>
+            <input type="text" class="form-control" name="txtRoad">
+          </div>
+                    <div class="col-md-3 field-group">
+            <div class="form-label">Scrubbers</div>
+            <input type="text" class="form-control" name="txtScrubbers">
+          </div>
+           </div>
+          <div class="row">
+          <div class="col-md-12 field-group">
+            <h3 class="section-header">Remarks</h3>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-3 field-group">
+            <div class="form-label">Remarks 1</div>
+            <input type="text" class="form-control" name="txtRemarks1">
+          </div>
+          <div class="col-md-3 field-group">
+            <div class="form-label">Remarks 2</div>
+            <input type="text" class="form-control" name="txtRemarks2">
+          </div>
+          <div class="col-md-3 field-group">
+            <div class="form-label">Remarks 3</div>
+            <input type="text" class="form-control" name="txtRemarks3">
+          </div>
+          <div class="col-md-3 field-group">
+            <div class="form-label">Remarks 4</div>
+            <input type="text" class="form-control" name="txtRemarks4">
+          </div>
+        </div>
+
+
+    <div class="navigation-buttons">
           <button type="button" class="btn-previous" id="prev4">Previous</button>
           <button type="submit" class="btn-save" id="save">Save</button>
         </div>
@@ -98,478 +1348,412 @@
     </form>
     <p id="status" class="mt-3"></p>
     <button class="btn-export" id="exportExcelBtn">Export to Excel</button>
-    
-    <!-- Voice control buttons -->
-    <div class="voice-controls" style="margin: 20px auto; text-align: center;">
-      <button id="startVoice" class="btn-voice" style="background-color: #4a90e2; color: white; padding: 10px 20px; border: none; border-radius: 5px; margin-right: 10px;">開始語音輸入</button>
-      <button id="pauseVoice" class="btn-voice" style="background-color: #e74c3c; color: white; padding: 10px 20px; border: none; border-radius: 5px; display: none;">暫停語音輸入</button>
-      <p id="voiceStatus" style="margin-top: 10px; color: #444;"></p>
-    </div>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
     let currentPage = 1;
     const pages = ['page1', 'page2', 'page3', 'page4'];
     let db;
     let dbInitialized = false;
 
-    // Voice input variables
-    let recognition;
-    let isPaused = false;
-    let currentInputField = null;
-
-    // Voice recognition setup
-    function initializeVoiceRecognition() {
-      if (!('webkitSpeechRecognition' in window)) {
-        showStatus('抱歉，您的瀏覽器不支持語音輸入功能', 'error');
-        return;
-      }
-
-      recognition = new webkitSpeechRecognition();
-      recognition.continuous = true;
-      recognition.interimResults = true;
-      recognition.lang = 'yue-Hant-HK'; // Cantonese (Hong Kong)
-
-      recognition.onstart = () => {
-        document.getElementById('startVoice').style.display = 'none';
-        document.getElementById('pauseVoice').style.display = 'inline-block';
-        document.getElementById('voiceStatus').textContent = '語音輸入已啟動...';
-        showStatus('語音輸入已開始');
-      };
-
-      recognition.onresult = (event) => {
-        if (isPaused) return;
-
-        const transcript = Array.from(event.results)
-          .map(result => result[0].transcript)
-          .join('');
-        
-        if (currentInputField) {
-          if (currentInputField.type === 'checkbox') {
-            if (transcript.includes('勾選') || transcript.includes('檢查')) {
-              currentInputField.checked = true;
-            } else if (transcript.includes('取消') || transcript.includes('唔勾')) {
-              currentInputField.checked = false;
-            }
-          } else if (currentInputField.tagName === 'SELECT') {
-            const options = Array.from(currentInputField.options);
-            const matchedOption = options.find(opt => 
-              transcript.toLowerCase().includes(opt.text.toLowerCase())
-            );
-            if (matchedOption) {
-              currentInputField.value = matchedOption.value;
-            }
-          } else {
-            currentInputField.value = transcript;
-            if (currentInputField.name === 'txtTime') {
-              formatTimeInput(currentInputField);
-            }
-          }
-          currentInputField.dispatchEvent(new Event('input'));
-        }
-      };
-
-      recognition.onerror = (event) => {
-        showStatus(`語音輸入錯誤: ${event.error}`, 'error');
-        stopVoiceRecognition();
-      };
-
-      recognition.onend = () => {
-        if (!isPaused) {
-          stopVoiceRecognition();
-        }
-      };
-    }
-
-    function startVoiceRecognition() {
-      if (!recognition) {
-        initializeVoiceRecognition();
-      }
-      
-      // Find the first visible input field on current page
-      const visibleInputs = Array.from(document.querySelectorAll(`#page${currentPage} input, #page${currentPage} select`))
-        .filter(input => !input.closest('.hidden'));
-      currentInputField = visibleInputs[0];
-      
-      recognition.start();
-      isPaused = false;
-    }
-
-    function pauseVoiceRecognition() {
-      if (recognition) {
-        recognition.stop();
-        isPaused = true;
-        document.getElementById('startVoice').style.display = 'inline-block';
-        document.getElementById('pauseVoice').style.display = 'none';
-        document.getElementById('voiceStatus').textContent = '語音輸入已暫停';
-        showStatus('語音輸入已暫停');
-      }
-    }
-
-    function stopVoiceRecognition() {
-      if (recognition) {
-        recognition.stop();
-        document.getElementById('startVoice').style.display = 'inline-block';
-        document.getElementById('pauseVoice').style.display = 'none';
-        document.getElementById('voiceStatus').textContent = '';
-        showStatus('語音輸入已停止');
-        isPaused = false;
-      }
-    }
-
     const initDB = () => {
-      return new Promise((resolve, reject) => {
-        const request = indexedDB.open('InspectionDB', 3);
+        return new Promise((resolve, reject) => {
+            const request = indexedDB.open('InspectionDB', 3);
 
-        request.onupgradeneeded = (e) => {
-          console.log('Database upgrade needed');
-          db = e.target.result;
-          if (!db.objectStoreNames.contains('inspections')) {
-            db.createObjectStore('inspections', { keyPath: 'timestamp' });
-            console.log('Object store "inspections" created');
-          }
-        };
+            request.onupgradeneeded = (e) => {
+                console.log('Database upgrade needed');
+                db = e.target.result;
+                if (!db.objectStoreNames.contains('inspections')) {
+                    db.createObjectStore('inspections', { keyPath: 'timestamp' });
+                    console.log('Object store "inspections" created');
+                }
+            };
 
-        request.onsuccess = (e) => {
-          db = e.target.result;
-          dbInitialized = true;
-          console.log('Database initialized successfully');
-          setDefaultValues();
-          resolve(db);
-        };
+            request.onsuccess = (e) => {
+                db = e.target.result;
+                dbInitialized = true;
+                console.log('Database initialized successfully');
+                setDefaultValues();
+                resolve(db);
+            };
 
-        request.onerror = (e) => {
-          console.error('Database error:', e.target.error);
-          showStatus(`Database error: ${e.target.error.message}. Please try refreshing.`, 'error');
-          reject(e.target.error);
-        };
+            request.onerror = (e) => {
+                console.error('Database error:', e.target.error);
+                showStatus(`Database error: ${e.target.error.message}. Please try refreshing.`, 'error');
+                reject(e.target.error);
+            };
 
-        request.onblocked = (e) => {
-          console.error('Database blocked:', e);
-          showStatus('Database is blocked. Please close other tabs.', 'error');
-          reject(new Error('Database blocked'));
-        };
-      });
+            request.onblocked = (e) => {
+                console.error('Database blocked:', e);
+                showStatus('Database is blocked. Please close other tabs.', 'error');
+                reject(new Error('Database blocked'));
+            };
+        });
     };
 
-    // Placeholder for setDefaultValues (excluded as requested)
     const setDefaultValues = () => {
-      // Your original setDefaultValues function would go here
+        const now = new Date();
+        const day = String(now.getDate()).padStart(2, '0');
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const year = now.getFullYear();
+        document.querySelector('input[name="txtDate"]').value = `${day}/${month}/${year}`;
+
+        const defaultValues = {
+            'cmbInspector': 'I(TD)43', 'cmbWeather': 'Sunny', 'cmbCCTV': 'Normal', 'cmbWeightDis': 'Yes',
+            'cmbPermitedW': 'Yes', 'cmboffQ': 'No', 'cmbtippingPermitedW': 'Yes', 'cmbtippingTraffic': 'Normal',
+            'cmbtippingCCTV': 'Normal', 'cmbGTW': 'Yes', 'cmbCurtain': 'Yes', 'cmbBefore': 'Normal',
+            'cmbAnaerobic': 'Normal', 'cmbFinal': 'Normal', 'cmbFilter': 'Normal', 'cmbBiogas': 'Normal',
+            'cmbPenstock': 'Open', 'cmbCleanliness': 'Yes', 'cmbMinutes': 'No', 'cmbHours': 'No',
+            'cmbPLC': 'Normal', 'cmbPreT': 'Normal', 'cmbPenstockChamber': 'Open', 'cmbAerobicS': 'Normal',
+            'cmbAnaerobicS': 'Normal', 'cmbPostT': 'Normal', 'cmbCent': 'Yes'
+        };
+
+        Object.entries(defaultValues).forEach(([name, value]) => {
+            const select = document.querySelector(`select[name="${name}"]`);
+            if (select) select.value = value;
+        });
+
+        const checkboxesToCheck = [
+            'chkScreen1', 'chkScreen3', 'chkDAF1', 'chkDAF2',
+            'chkCrane1', 'chkCrane2', 'chkWash1', 'chkWash2'
+        ];
+        checkboxesToCheck.forEach(name => {
+            const checkbox = document.querySelector(`input[name="${name}"]`);
+            if (checkbox) checkbox.checked = true;
+        });
     };
 
     const showPage = (pageNum) => {
-      pages.forEach(p => document.getElementById(p).classList.add('hidden'));
-      document.getElementById(`page${pageNum}`).classList.remove('hidden');
+        pages.forEach(p => document.getElementById(p).classList.add('hidden'));
+        document.getElementById(`page${pageNum}`).classList.remove('hidden');
     };
 
     const showStatus = (message, type = 'success') => {
-      const status = document.getElementById('status');
-      status.textContent = '';
-      status.appendChild(document.createTextNode(message));
-      status.style.color = type === 'error' ? '#e74c3c' : '#27ae60';
-      setTimeout(() => status.textContent = '', 5000);
+        const status = document.getElementById('status');
+        status.textContent = '';
+        status.appendChild(document.createTextNode(message));
+        status.style.color = type === 'error' ? '#e74c3c' : '#27ae60';
+        setTimeout(() => status.textContent = '', 5000);
     };
 
     const validateForm = (data) => {
-      if (!data.txtDate) return "Date is required";
-      if (!data.txtTime.match(/^(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$/)) return "Invalid time format (HH:MM)";
-      if (!data.cmbInspector) return "Inspector is required";
-      if (!data.cmbWeather) return "Weather is required";
-      return null;
+        if (!data.txtDate) return "Date is required";
+        if (!data.txtTime.match(/^(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$/)) return "Invalid time format (HH:MM)";
+        if (!data.cmbInspector) return "Inspector is required";
+        if (!data.cmbWeather) return "Weather is required";
+        return null;
     };
 
     const showLoading = (pageNum, show) => {
-      document.getElementById(`loading${pageNum}`).style.display = show ? 'flex' : 'none';
+        document.getElementById(`loading${pageNum}`).style.display = show ? 'flex' : 'none';
     };
 
     const saveLocally = (data) => {
-      return new Promise((resolve, reject) => {
-        if (!dbInitialized || !db) {
-          reject(new Error('Database not initialized'));
-          return;
-        }
-        const tx = db.transaction('inspections', 'readwrite');
-        const store = tx.objectStore('inspections');
-        const request = store.add(data);
+        return new Promise((resolve, reject) => {
+            if (!dbInitialized || !db) {
+                reject(new Error('Database not initialized'));
+                return;
+            }
+            const tx = db.transaction('inspections', 'readwrite');
+            const store = tx.objectStore('inspections');
+            const request = store.add(data);
 
-        request.onsuccess = () => {
-          console.log('Data saved successfully:', data);
-          resolve();
-        };
+            request.onsuccess = () => {
+                console.log('Data saved successfully:', data);
+                resolve();
+            };
 
-        request.onerror = (e) => {
-          console.error('Error saving data:', e.target.error);
-          reject(e.target.error);
-        };
-      });
+            request.onerror = (e) => {
+                console.error('Error saving data:', e.target.error);
+                reject(e.target.error);
+            };
+        });
     };
 
     const formatTimeInput = (input) => {
-      let value = input.value.replace(/[^0-9]/g, '');
-      if (value.length === 4) {
-        const hours = value.slice(0, 2);
-        const minutes = value.slice(2, 4);
-        if (hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59) {
-          input.value = `${hours}:${minutes}`;
-        } else {
-          input.value = '';
-          showStatus('Invalid time: Hours (00-23) or Minutes (00-59)', 'error');
+        let value = input.value.replace(/[^0-9]/g, '');
+        if (value.length === 4) {
+            const hours = value.slice(0, 2);
+            const minutes = value.slice(2, 4);
+            if (hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59) {
+                input.value = `${hours}:${minutes}`;
+            } else {
+                input.value = '';
+                showStatus('Invalid time: Hours (00-23) or Minutes (00-59)', 'error');
+            }
         }
-      }
     };
 
     const resetForm = () => {
-      const form = document.getElementById('inspectionForm');
-      form.reset();
-      console.log('Form reset called');
-      localStorage.clear();
-      console.log('LocalStorage cleared');
+        const form = document.getElementById('inspectionForm');
+        
+        // Reset the form
+        form.reset();
+        console.log('Form reset called');
 
-      document.querySelectorAll('input[type="text"], input[type="number"], textarea').forEach(input => {
-        input.value = '';
-        input.defaultValue = '';
-        console.log(`Cleared input ${input.name}: ${input.value}`);
-      });
+        // Clear all localStorage
+        localStorage.clear();
+        console.log('LocalStorage cleared');
 
-      document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-        checkbox.checked = false;
-        console.log(`Reset checkbox ${checkbox.name}`);
-      });
+        // Explicitly clear all inputs
+        document.querySelectorAll('input[type="text"], input[type="number"], textarea').forEach(input => {
+            input.value = '';
+            input.defaultValue = ''; // Reset default value as well
+            console.log(`Cleared input ${input.name}: ${input.value}`);
+        });
 
-      document.querySelectorAll('select').forEach(select => {
-        select.selectedIndex = 0;
-        console.log(`Reset select ${select.name} to ${select.value}`);
-      });
+        // Reset checkboxes
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.checked = false;
+            console.log(`Reset checkbox ${checkbox.name}`);
+        });
 
-      setDefaultValues();
-      console.log('Default values reapplied');
+        // Reset selects to first option
+        document.querySelectorAll('select').forEach(select => {
+            select.selectedIndex = 0;
+            console.log(`Reset select ${select.name} to ${select.value}`);
+        });
+
+        // Reapply default values after clearing
+        setDefaultValues();
+        console.log('Default values reapplied');
     };
 
     document.addEventListener('DOMContentLoaded', () => {
-      console.log('DOM loaded, initializing DB...');
-      initDB()
-        .then(() => {
-          console.log('DB initialized, showing page 1');
-          showPage(1);
-          const timeInput = document.querySelector('input[name="txtTime"]');
-          timeInput.addEventListener('input', (e) => formatTimeInput(e.target));
-          
-          // Add voice control event listeners
-          document.getElementById('startVoice').addEventListener('click', startVoiceRecognition);
-          document.getElementById('pauseVoice').addEventListener('click', pauseVoiceRecognition);
-          
-          // Add click handler for field selection during voice input
-          document.querySelectorAll('input, select').forEach(element => {
-            element.addEventListener('click', (e) => {
-              if (recognition && !isPaused) {
-                currentInputField = e.target;
-              }
-            });
-          });
-        })
-        .catch((error) => console.error('Initialization error:', error));
+        console.log('DOM loaded, initializing DB...');
+        initDB()
+            .then(() => {
+                console.log('DB initialized, showing page 1');
+                showPage(1);
+                const timeInput = document.querySelector('input[name="txtTime"]');
+                timeInput.addEventListener('input', (e) => formatTimeInput(e.target));
+            })
+            .catch((error) => console.error('Initialization error:', error));
     });
 
     document.querySelector('.container').addEventListener('click', (e) => {
-      const targetId = e.target.id;
-      if (targetId.startsWith('next') && currentPage < pages.length) {
-        currentPage++;
-        showPage(currentPage);
-      } else if (targetId.startsWith('prev') && currentPage > 1) {
-        currentPage--;
-        showPage(currentPage);
-      }
+        const targetId = e.target.id;
+        if (targetId.startsWith('next') && currentPage < pages.length) {
+            currentPage++;
+            showPage(currentPage);
+        } else if (targetId.startsWith('prev') && currentPage > 1) {
+            currentPage--;
+            showPage(currentPage);
+        }
     });
 
     document.getElementById('inspectionForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      console.log('Form submission started');
-      showLoading(4, true);
+        e.preventDefault();
+        console.log('Form submission started');
+        showLoading(4, true);
 
-      try {
-        const formData = new FormData(e.target);
-        const data = Object.fromEntries(formData.entries());
-        data.timestamp = new Date().toISOString();
-        console.log('Form data collected:', data);
+        try {
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+            data.timestamp = new Date().toISOString();
+            console.log('Form data collected:', data);
 
-        const timeInput = document.querySelector('input[name="txtTime"]');
-        if (!timeInput.value) {
-          const now = new Date();
-          timeInput.value = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-          data.txtTime = timeInput.value;
+            const timeInput = document.querySelector('input[name="txtTime"]');
+            if (!timeInput.value) {
+                const now = new Date();
+                timeInput.value = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+                data.txtTime = timeInput.value;
+            }
+
+            const checkboxes = [
+                "chkWeightbridge1", "chkWeightbridge2", "chkWeightbridge3", "chkWeightbridge4",
+                "chktipping1", "chktipping2", "chkC1", "chkC2", "chkC3", "chkC4", "chkC5",
+                "chkC6", "chkC7", "chkC8", "chkC9", "chkC10", "chkScreen1", "chkScreen2",
+                "chkScreen3", "chkDAF1", "chkDAF2", "chkCrane1", "chkCrane2", "chkCHU1",
+                "chkCHU2", "chkLaiwan", "chkNgonshuen", "chkWash1", "chkWash2", "chkWash3",
+                "chkScrubber1", "chkScrubber2", "chkScrubber3", "chkScrubber4", "chkScrubber5",
+                "chkT300", "chkT401", "chkT402", "chkT403", "chkT404", "chkMF1", "chkMF2",
+                "chkMF3", "chkMF4", "chkMF5", "chkMF6"
+            ];
+
+            checkboxes.forEach(name => {
+                data[name] = formData.has(name) ? "true" : "false";
+            });
+
+            const validationError = validateForm(data);
+            if (validationError) {
+                console.warn('Validation failed:', validationError);
+                showStatus(validationError, 'error');
+                showLoading(4, false);
+                return;
+            }
+
+            console.log('Attempting to save data locally...');
+            await saveLocally(data);
+            console.log('Data saved successfully');
+            showStatus('Data saved locally!');
+        } catch (error) {
+            console.error('Save failed:', error);
+            showStatus(`Failed to save data: ${error.message}`, 'error');
+        } finally {
+            console.log('Submission process completed');
+            showLoading(4, false);
         }
-
-        const checkboxes = [
-          "chkWeightbridge1", "chkWeightbridge2", "chkWeightbridge3", "chkWeightbridge4",
-          "chktipping1", "chktipping2", "chkC1", "chkC2", "chkC3", "chkC4", "chkC5",
-          "chkC6", "chkC7", "chkC8", "chkC9", "chkC10", "chkScreen1", "chkScreen2",
-          "chkScreen3", "chkDAF1", "chkDAF2", "chkCrane1", "chkCrane2", "chkCHU1",
-          "chkCHU2", "chkLaiwan", "chkNgonshuen", "chkWash1", "chkWash2", "chkWash3",
-          "chkScrubber1", "chkScrubber2", "chkScrubber3", "chkScrubber4", "chkScrubber5",
-          "chkT300", "chkT401", "chkT402", "chkT403", "chkT404", "chkMF1", "chkMF2",
-          "chkMF3", "chkMF4", "chkMF5", "chkMF6"
-        ];
-
-        checkboxes.forEach(name => {
-          data[name] = formData.has(name) ? "true" : "false";
-        });
-
-        const validationError = validateForm(data);
-        if (validationError) {
-          console.warn('Validation failed:', validationError);
-          showStatus(validationError, 'error');
-          showLoading(4, false);
-          return;
-        }
-
-        console.log('Attempting to save data locally...');
-        await saveLocally(data);
-        console.log('Data saved successfully');
-        showStatus('Data saved locally!');
-      } catch (error) {
-        console.error('Save failed:', error);
-        showStatus(`Failed to save data: ${error.message}`, 'error');
-      } finally {
-        console.log('Submission process completed');
-        showLoading(4, false);
-      }
     });
 
     document.getElementById('exportExcelBtn').addEventListener('click', async (e) => {
-      e.preventDefault();
-      if (typeof XLSX === 'undefined') {
-        showStatus('Excel library not loaded. Check your connection.', 'error');
-        return;
-      }
-      if (!confirm('Export all local data to Excel and clear the database?')) return;
-
-      showLoading(currentPage, true);
-
-      try {
-        if (!dbInitialized || !db) {
-          console.log('Database not initialized, retrying...');
-          await initDB();
-          if (!dbInitialized) throw new Error('Database failed to initialize');
+        e.preventDefault();
+        if (typeof XLSX === 'undefined') {
+            showStatus('Excel library not loaded. Check your connection.', 'error');
+            return;
         }
+        if (!confirm('Export all local data to Excel and clear the database?')) return;
 
-        const tx = db.transaction('inspections', 'readonly');
-        const store = tx.objectStore('inspections');
-        const data = await new Promise((resolve, reject) => {
-          const request = store.getAll();
-          request.onsuccess = () => resolve(request.result);
-          request.onerror = () => reject(new Error('Failed to retrieve data'));
-        });
+        showLoading(currentPage, true);
 
-        if (!data || data.length === 0) {
-          showStatus('No local data to export', 'error');
-          return;
-        }
-
-        const reformatDate = (dateStr) => {
-          if (!dateStr) return '';
-          if (dateStr.includes('-')) {
-            const [year, month, day] = dateStr.split('-');
-            return `${day}/${month}/${year}`;
-          }
-          return dateStr;
-        };
-
-        // Headers array excluded as requested
-        const headers = []; // Placeholder - your original headers would go here
-
-        const fieldNames = [
-          "txtDate", "cmbInspector", "txtTime", "cmbWeather", "chkWeightbridge1", "chkWeightbridge2",
-          "chkWeightbridge3", "chkWeightbridge4", "cmbCCTV", "cmbWeightDis", "bridgeWasteV",
-          "bridgeWasteT", "cmbPermitedW", "cmboffQ", "chktipping1", "chktipping2", "tippingWasteV",
-          "tippingWasteT", "cmbtippingPermitedW", "cmbtippingTraffic", "cmbtippingCCTV", "txtfPress",
-          "chkC1", "txtC1", "chkC2", "txtC2", "chkMF1", "chkC3", "txtC3", "chkMF2", "chkC4",
-          "txtC4", "chkMF3", "chkC5", "txtC5", "chkMF4", "chkC6", "txtC6", "chkMF5", "chkC7",
-          "txtC7", "chkMF6", "chkC8", "txtC8", "chkC9", "txtC9", "chkC10", "txtC10", "chkScreen1",
-          "chkScreen2", "chkScreen3", "txt1A", "txt1B", "txt2A", "txt2B", "chkDAF1", "chkDAF2",
-          "cmbGTW", "chkCrane1", "chkCrane2", "chkCHU1", "chkCHU2", "txt145B", "txt550FV",
-          "txt155W", "txtOthers", "chkLaiwan", "chkNgonshuen", "chkWash1", "chkWash2", "chkWash3",
-          "cmbCleanliness", "cmbMinutes", "cmbHours", "cmbCurtain", "chkScrubber1", "chkScrubber2",
-          "chkScrubber3", "chkScrubber4", "chkScrubber5", "txtAcid1", "txtAcid2", "txtAcid4",
-          "txtAcid5", "txtAlk1", "txtAlk2", "txtAlk3", "txtAlk4", "txtAlk5", "txtORP1", "txtORP2",
-          "txtORP3", "txtORP4", "txtORP5", "cmbBefore", "cmbAnaerobic", "chkT300", "chkT401",
-          "chkT402", "chkT403", "chkT404", "cmbFinal", "cmbFilter", "cmbBiogas", "cmbPenstock",
-          "txtRemarks1", "txtRemarks2", "txtRemarks3", "txtRemarks4", "cmbPLC", "cmbPreT",
-          "cmbPenstockChamber", "cmbAerobicS", "txtAT401", "txtAT402", "txtAT403", "txtAT404",
-          "cmbAnaerobicS", "txtApH", "txtATemp", "txtADO", "txtABiogas", "cmbPostT", "cmbCent",
-          "txtWetsep", "txtMarineVessel", "txtStorm", "txtVWF", "txtRundown", "txt101", "txt100",
-          "txt313", "txt312", "txt410", "txt413", "txtPublic", "txtRoad", "txtMarine", "txtScrubbers",
-          "txtVWS", "txt401DO", "txt402DO", "txt403DO", "txt404DO", "txt401Temp", "txt402Temp",
-          "txt403Temp", "txt404Temp", "txt404pH", "timestamp"
-        ];
-
-        const worksheetData = [
-          headers,
-          ...data.map(item => fieldNames.map(field => {
-            if (field === "txtDate" && item[field]) {
-              return reformatDate(item[field]);
+        try {
+            if (!dbInitialized || !db) {
+                console.log('Database not initialized, retrying...');
+                await initDB();
+                if (!dbInitialized) throw new Error('Database failed to initialize');
             }
-            return item[field] || '';
-          }))
-        ];
 
-        const ws = XLSX.utils.aoa_to_sheet(worksheetData);
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Inspections");
-
-        const now = new Date();
-        const hktDate = new Date(now.getTime() + (8 * 60 * 60 * 1000));
-        const timestamp = `${hktDate.getUTCFullYear()}${String(hktDate.getUTCMonth() + 1).padStart(2, '0')}${String(hktDate.getUTCDate()).padStart(2, '0')}_${String(hktDate.getUTCHours()).padStart(2, '0')}${String(hktDate.getUTCMinutes()).padStart(2, '0')}${String(hktDate.getUTCSeconds()).padStart(2, '0')}`;
-        XLSX.writeFile(wb, `inspections_${timestamp}.xlsx`);
-
-        const clearDB = () => {
-          return new Promise((resolve, reject) => {
-            const tx = db.transaction('inspections', 'readwrite');
+            const tx = db.transaction('inspections', 'readonly');
             const store = tx.objectStore('inspections');
-            const request = store.clear();
-            request.onsuccess = () => {
-              console.log('IndexedDB cleared');
-              resolve();
+            const data = await new Promise((resolve, reject) => {
+                const request = store.getAll();
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(new Error('Failed to retrieve data'));
+            });
+
+            if (!data || data.length === 0) {
+                showStatus('No local data to export', 'error');
+                return;
+            }
+
+            const reformatDate = (dateStr) => {
+                if (!dateStr) return '';
+                if (dateStr.includes('-')) {
+                    const [year, month, day] = dateStr.split('-');
+                    return `${day}/${month}/${year}`;
+                }
+                return dateStr;
             };
-            request.onerror = (e) => reject(e.target.error);
-          });
-        };
 
-        await clearDB();
-        resetForm();
+            const headers = [
+                "Date", "Inspector", "Time", "Weather", "Weightbridge 1", "Weightbridge 2",
+                "Weightbridge 3", "Weightbridge 4", "CCTV", "Weight Display", "Vehicle No. (Bridge)",
+                "Type/Origin", "Permitted Waste", "Off-site Queue", "Inspected by EPD", "Inspected by CHEC",
+                "Vehicle No. (Tipping)", "Type (Tipping)", "Permitted Waste (Tipping)", "Traffic Control",
+                "CCTV (Tipping)", "Filter Press", "C1", "Container No. (C1)", "C2", "Container No. (C2)",
+                "MF1", "C3", "Container No. (C3)", "MF2", "C4", "Container No. (C4)", "MF3", "C5",
+                "Container No. (C5)", "MF4", "C6", "Container No. (C6)", "MF5", "C7", "Container No. (C7)",
+                "MF6", "C8", "Container No. (C8)", "C9", "Container No. (C9)", "C10", "Container No. (C10)",
+                "Screen 1", "Screen 2", "Screen 3", "Tank 1A", "Tank 1B", "Tank 2A", "Tank 2B", "DAF 1",
+                "DAF 2", "GTW Area", "Crane 1", "Crane 2", "CHU 1", "CHU 2", "145B", "550FV", "155WV",
+                "Others", "Lai Wan", "Ngon Shuen", "Vehicle Wash 1", "Vehicle Wash 2", "Vehicle Wash 3",
+                "Cleanliness", ">30 mins", "Offsite >24 hrs", "Air Curtain", "Scrubber 1", "Scrubber 2",
+                "Scrubber 3", "Scrubber 4", "Scrubber 5", "Acid Stage 1", "Acid Stage 2", "Acid Stage 4",
+                "Acid Stage 5", "Alk Stage 1", "Alk Stage 2", "Alk Stage 3", "Alk Stage 4", "Alk Stage 5",
+                "ORP Range 1", "ORP Range 2", "ORP Range 3", "ORP Range 4", "ORP Range 5", "Before Treatment",
+                "Anaerobic Tanks", "T300", "T401", "T402", "T403", "T404", "Final Clarifier", "Filter Press",
+                "Biogas Tank", "Penstock", "Remarks 1", "Remarks 2", "Remarks 3", "Remarks 4", "PLC Condition",
+                "Pre Treatment", "Penstock Status", "AerobicS", "AT401", "AT402", "AT403", "AT404",
+                "AnaerobicS", "ApH", "ATemp", "ADO", "ABiogas", "Post-Treatment", "Centrifuge", "Wetsep",
+                "Marine Vessel", "Storm", "VWF", "Rundown", "101", "100", "313", "312", "410", "413",
+                "Public", "Road", "Marine", "Scrubbers", "VWS", "401 DO", "402 DO", "403 DO", "404 DO",
+                "401 Temp", "402 Temp", "403 Temp", "404 Temp", "404 pH", "Timestamp"
+            ];
 
-        setTimeout(() => {
-          document.querySelectorAll('input, select, textarea').forEach(element => {
-            element.dispatchEvent(new Event('change'));
-            element.dispatchEvent(new Event('input'));
-          });
-          console.log('DOM refresh forced');
-          showStatus('Data exported successfully and form cleared');
-        }, 100);
+            const fieldNames = [
+                "txtDate", "cmbInspector", "txtTime", "cmbWeather", "chkWeightbridge1", "chkWeightbridge2",
+                "chkWeightbridge3", "chkWeightbridge4", "cmbCCTV", "cmbWeightDis", "bridgeWasteV",
+                "bridgeWasteT", "cmbPermitedW", "cmboffQ", "chktipping1", "chktipping2", "tippingWasteV",
+                "tippingWasteT", "cmbtippingPermitedW", "cmbtippingTraffic", "cmbtippingCCTV", "txtfPress",
+                "chkC1", "txtC1", "chkC2", "txtC2", "chkMF1", "chkC3", "txtC3", "chkMF2", "chkC4",
+                "txtC4", "chkMF3", "chkC5", "txtC5", "chkMF4", "chkC6", "txtC6", "chkMF5", "chkC7",
+                "txtC7", "chkMF6", "chkC8", "txtC8", "chkC9", "txtC9", "chkC10", "txtC10", "chkScreen1",
+                "chkScreen2", "chkScreen3", "txt1A", "txt1B", "txt2A", "txt2B", "chkDAF1", "chkDAF2",
+                "cmbGTW", "chkCrane1", "chkCrane2", "chkCHU1", "chkCHU2", "txt145B", "txt550FV",
+                "txt155W", "txtOthers", "chkLaiwan", "chkNgonshuen", "chkWash1", "chkWash2", "chkWash3",
+                "cmbCleanliness", "cmbMinutes", "cmbHours", "cmbCurtain", "chkScrubber1", "chkScrubber2",
+                "chkScrubber3", "chkScrubber4", "chkScrubber5", "txtAcid1", "txtAcid2", "txtAcid4",
+                "txtAcid5", "txtAlk1", "txtAlk2", "txtAlk3", "txtAlk4", "txtAlk5", "txtORP1", "txtORP2",
+                "txtORP3", "txtORP4", "txtORP5", "cmbBefore", "cmbAnaerobic", "chkT300", "chkT401",
+                "chkT402", "chkT403", "chkT404", "cmbFinal", "cmbFilter", "cmbBiogas", "cmbPenstock",
+                "txtRemarks1", "txtRemarks2", "txtRemarks3", "txtRemarks4", "cmbPLC", "cmbPreT",
+                "cmbPenstockChamber", "cmbAerobicS", "txtAT401", "txtAT402", "txtAT403", "txtAT404",
+                "cmbAnaerobicS", "txtApH", "txtATemp", "txtADO", "txtABiogas", "cmbPostT", "cmbCent",
+                "txtWetsep", "txtMarineVessel", "txtStorm", "txtVWF", "txtRundown", "txt101", "txt100",
+                "txt313", "txt312", "txt410", "txt413", "txtPublic", "txtRoad", "txtMarine", "txtScrubbers",
+                "txtVWS", "txt401DO", "txt402DO", "txt403DO", "txt404DO", "txt401Temp", "txt402Temp",
+                "txt403Temp", "txt404Temp", "txt404pH", "timestamp"
+            ];
 
-      } catch (error) {
-        console.error('Export error:', error);
-        showStatus(`Export failed: ${error.message}`, 'error');
-      } finally {
-        showLoading(currentPage, false);
-      }
+            const worksheetData = [
+                headers,
+                ...data.map(item => fieldNames.map(field => {
+                    if (field === "txtDate" && item[field]) {
+                        return reformatDate(item[field]);
+                    }
+                    return item[field] || '';
+                }))
+            ];
+
+            const ws = XLSX.utils.aoa_to_sheet(worksheetData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Inspections");
+
+            const now = new Date();
+            const hktDate = new Date(now.getTime() + (8 * 60 * 60 * 1000));
+            const timestamp = `${hktDate.getUTCFullYear()}${String(hktDate.getUTCMonth() + 1).padStart(2, '0')}${String(hktDate.getUTCDate()).padStart(2, '0')}_${String(hktDate.getUTCHours()).padStart(2, '0')}${String(hktDate.getUTCMinutes()).padStart(2, '0')}${String(hktDate.getUTCSeconds()).padStart(2, '0')}`;
+            XLSX.writeFile(wb, `inspections_${timestamp}.xlsx`);
+
+            const clearDB = () => {
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction('inspections', 'readwrite');
+                    const store = tx.objectStore('inspections');
+                    const request = store.clear();
+                    request.onsuccess = () => {
+                        console.log('IndexedDB cleared');
+                        resolve();
+                    };
+                    request.onerror = (e) => reject(e.target.error);
+                });
+            };
+
+            await clearDB();
+            resetForm();
+
+            setTimeout(() => {
+                document.querySelectorAll('input, select, textarea').forEach(element => {
+                    element.dispatchEvent(new Event('change'));
+                    element.dispatchEvent(new Event('input'));
+                });
+                console.log('DOM refresh forced');
+                showStatus('Data exported successfully and form cleared');
+            }, 100);
+
+        } catch (error) {
+            console.error('Export error:', error);
+            showStatus(`Export failed: ${error.message}`, 'error');
+        } finally {
+            showLoading(currentPage, false);
+        }
     });
 
+    // LocalStorage handlers
     document.querySelectorAll('input, textarea, select').forEach(function(element) {
-      element.addEventListener('input', function() {
-        localStorage.setItem(element.name, element.value);
-      });
+        element.addEventListener('input', function() {
+            localStorage.setItem(element.name, element.value);
+        });
     });
 
     window.addEventListener('load', function() {
-      document.querySelectorAll('input, textarea, select').forEach(function(element) {
-        const savedValue = localStorage.getItem(element.name);
-        if (savedValue) {
-          element.value = savedValue;
-        }
-      });
-      setDefaultValues();
+        document.querySelectorAll('input, textarea, select').forEach(function(element) {
+            const savedValue = localStorage.getItem(element.name);
+            if (savedValue) {
+                element.value = savedValue;
+            }
+        });
+        setDefaultValues();
     });
-  </script>
+</script>
 </body>
 </html>
