@@ -920,10 +920,10 @@ input[type="text"], textarea {
 
 
 
-      <!-- Page 3: Air Scrubber -->
+      <!-- Page 3: Air Monitoring -->
       <div id="page3" class="page-container hidden">
         <div class="loading-overlay" id="loading3"><div class="spinner"></div></div>
-        <h2 class="page-header">Air Scrubber</h2>       
+        <h2 class="page-header">Air Monitoring</h2>       
 
         <div class="row">
           <div class="col-md-4 field-group">
@@ -1555,28 +1555,37 @@ input[type="text"], textarea {
         console.log('Default values reapplied');
     };
 
-    document.addEventListener('DOMContentLoaded', () => {
-        console.log('DOM loaded, initializing DB...');
-        initDB()
-            .then(() => {
-                console.log('DB initialized, showing page 1');
-                showPage(1);
-                const timeInput = document.querySelector('input[name="txtTime"]');
-                timeInput.addEventListener('input', (e) => formatTimeInput(e.target));
-            })
-            .catch((error) => console.error('Initialization error:', error));
+   const scrollToTop = () => {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth' // Optional: Adds a smooth scrolling effect
     });
+};
 
-    document.querySelector('.container').addEventListener('click', (e) => {
-        const targetId = e.target.id;
-        if (targetId.startsWith('next') && currentPage < pages.length) {
-            currentPage++;
-            showPage(currentPage);
-        } else if (targetId.startsWith('prev') && currentPage > 1) {
-            currentPage--;
-            showPage(currentPage);
-        }
-    });
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM loaded, initializing DB...');
+    initDB()
+        .then(() => {
+            console.log('DB initialized, showing page 1');
+            showPage(1);
+            const timeInput = document.querySelector('input[name="txtTime"]');
+            timeInput.addEventListener('input', (e) => formatTimeInput(e.target));
+        })
+        .catch((error) => console.error('Initialization error:', error));
+});
+
+document.querySelector('.container').addEventListener('click', (e) => {
+    const targetId = e.target.id;
+    if (targetId.startsWith('next') && currentPage < pages.length) {
+        currentPage++;
+        showPage(currentPage);
+        scrollToTop(); // Scroll to top when going to the next page
+    } else if (targetId.startsWith('prev') && currentPage > 1) {
+        currentPage--;
+        showPage(currentPage);
+        scrollToTop(); // Scroll to top when going to the previous page
+    }
+});
 
     document.getElementById('inspectionForm').addEventListener('submit', async (e) => {
         e.preventDefault();
