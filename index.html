@@ -564,6 +564,30 @@ input[type="text"], textarea {
             </div>
           </div>
 	</div>
+
+<div class="row">
+          <div class="col-md-4 field-group">
+            <div class="form-label">Cleanliness</div>
+            <select class="form-select" name="cmbCleanliness">
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+          <div class="col-md-4 field-group">
+            <div class="form-label">>30 mins</div>
+            <select class="form-select" name="cmbMinutes">
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+          <div class="col-md-4 field-group">
+            <div class="form-label">Offsite Litter >24 hrs</div>
+            <select class="form-select" name="cmbHours">
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+        </div>
 <div class="row">
           <div class="col-md-12 field-group">
             <h3 class="section-header">GTW Area</h3>
@@ -764,8 +788,8 @@ input[type="text"], textarea {
           </div>            
         
           <div class="col-md-4 field-group">
-            <div class="form-label">AnaerobicS</div>
-            <select class="form-select" name="cmbAnaerobicS">
+            <div class="form-label">AerobicS</div>
+            <select class="form-select" name="cmbAerobicS">
               <option value="Normal">Normal</option>
               <option value="Abnormal">Abnormal</option>
             </select>
@@ -1660,8 +1684,8 @@ input[type="text"], textarea {
         const headers = [
             "Date", "Inspector", "Time", "Weather", "Weightbridge 1", "Weightbridge 2",
             "Weightbridge 3", "Weightbridge 4", "CCTV", "Weight Display", "Vehicle No. (Bridge)",
-            "Type/Origin", "Permitted Waste", "Off-site Queue", "Inspected by EPD", "Inspected by CHEC",
-            "Vehicle No. (Tipping)", "Type (Tipping)", "Permitted Waste (Tipping)", "Traffic Control",
+            "Type/Origin", "Permited Waste", "Off-site Queue", "Inspected by EPD", "Inspected by CHEC",
+            "Vehicle No. (Tipping)", "Type (Tipping)", "Permited Waste (Tipping)", "Traffic Control",
             "CCTV (Tipping)", "Filter Press", "C1", "Container No. (C1)", "C2", "Container No. (C2)",
             "MF1", "C3", "Container No. (C3)", "MF2", "C4", "Container No. (C4)", "MF3", "C5",
             "Container No. (C5)", "MF4", "C6", "Container No. (C6)", "MF5", "C7", "Container No. (C7)",
@@ -1683,29 +1707,29 @@ input[type="text"], textarea {
         ];
 
         const fieldNames = [
-            "txtDate", "cmbInspector", "txtTime", "cmbWeather", "chkWeightbridge1", "chkWeightbridge2",
-            "chkWeightbridge3", "chkWeightbridge4", "cmbCCTV", "cmbWeightDis", "bridgeWasteV",
-            "bridgeWasteT", "cmbPermittedW", "cmboffQ", "chktipping1", "chktipping2", "tippingWasteV",
-            "tippingWasteT", "cmbtippingPermittedW", "cmbtippingTraffic", "cmbtippingCCTV", "txtfPress",
-            "chkC1", "txtC1", "chkC2", "txtC2", "chkMF1", "chkC3", "txtC3", "chkMF2", "chkC4",
-            "txtC4", "chkMF3", "chkC5", "txtC5", "chkMF4", "chkC6", "txtC6", "chkMF5", "chkC7",
-            "txtC7", "chkMF6", "chkC8", "txtC8", "chkC9", "txtC9", "chkC10", "txtC10", "chkScreen1",
-            "chkScreen2", "chkScreen3", "txt1A", "txt1B", "txt2A", "txt2B", "chkDAF1", "chkDAF2",
-            "cmbGTW", "chkCrane1", "chkCrane2", "chkCHU1", "chkCHU2", "txt145B", "txt550FV",
-            "txt155W", "txtOthers", "chkLaiwan", "chkNgonshuen", "chkWash1", "chkWash2", "chkWash3",
-            "cmbCleanliness", "cmbMinutes", "cmbHours", "cmbCurtain", "chkScrubber1", "chkScrubber2",
-            "chkScrubber3", "chkScrubber4", "chkScrubber5", "txtAcid1", "txtAcid2", "txtAcid4",
-            "txtAcid5", "txtAlk1", "txtAlk2", "txtAlk3", "txtAlk4", "txtAlk5", "txtORP1", "txtORP2",
-            "txtORP3", "txtORP4", "txtORP5", "cmbBefore", "cmbAnaerobic", "chkT300", "chkT401",
-            "chkT402", "chkT403", "chkT404", "cmbFinal", "cmbFilter", "cmbBiogas", "cmbPenstock",
-            "txtRemarks1", "txtRemarks2", "txtRemarks3", "txtRemarks4", "cmbPLC", "cmbPreT",
-            "cmbPenstockChamber", "cmbAerobicS", "txtAT401", "txtAT402", "txtAT403", "txtAT404",
-            "cmbAnaerobicS", "txtApH", "txtATemp", "txtADO", "txtABiogas", "cmbPostT", "cmbCent",
-            "txtWetsep", "txtMarineVessel", "txtStorm", "txtVWF", "txtRundown", "txt101", "txt100",
-            "txt313", "txt312", "txt410", "txt413", "txtPublic", "txtRoad", "txtMarine", "txtScrubbers",
-            "txtVWS", "txt401DO", "txt402DO", "txt403DO", "txt404DO", "txt401Temp", "txt402Temp",
-            "txt403Temp", "txt404Temp", "txt404pH", "timestamp"
-        ];
+    "txtDate", "cmbInspector", "txtTime", "cmbWeather", "chkWeightbridge1", "chkWeightbridge2",
+    "chkWeightbridge3", "chkWeightbridge4", "cmbCCTV", "cmbWeightDis", "bridgeWasteV",
+    "bridgeWasteT", "cmbPermitedW", "cmboffQ", "chktipping1", "chktipping2", "tippingWasteV",
+    "tippingWasteT", "cmbtippingPermitedW", "cmbtippingTraffic", "cmbtippingCCTV", "txtfPress",
+    "chkC1", "txtC1", "chkC2", "txtC2", "chkMF1", "chkC3", "txtC3", "chkMF2", "chkC4",
+    "txtC4", "chkMF3", "chkC5", "txtC5", "chkMF4", "chkC6", "txtC6", "chkMF5", "chkC7",
+    "txtC7", "chkMF6", "chkC8", "txtC8", "chkC9", "txtC9", "chkC10", "txtC10", "chkScreen1",
+    "chkScreen2", "chkScreen3", "txt1A", "txt1B", "txt2A", "txt2B", "chkDAF1", "chkDAF2",
+    "cmbGTW", "chkCrane1", "chkCrane2", "chkCHU1", "chkCHU2", "txt145B", "txt550FV",
+    "txt155W", "txtOthers", "chkLaiwan", "chkNgonshuen", "chkWash1", "chkWash2", "chkWash3",
+    "cmbCleanliness", "cmbMinutes", "cmbHours", "cmbCurtain", "chkScrubber1", "chkScrubber2",
+    "chkScrubber3", "chkScrubber4", "chkScrubber5", "txtAcid1", "txtAcid2", "txtAcid4",
+    "txtAcid5", "txtAlk1", "txtAlk2", "txtAlk3", "txtAlk4", "txtAlk5", "txtORP1", "txtORP2",
+    "txtORP3", "txtORP4", "txtORP5", "cmbBefore", "cmbAnaerobic", "chkT300", "chkT401",
+    "chkT402", "chkT403", "chkT404", "cmbFinal", "cmbFilter", "cmbBiogas", "cmbPenstock",
+    "txtRemarks1", "txtRemarks2", "txtRemarks3", "txtRemarks4", "cmbPLC", "cmbPreT",
+    "cmbPenstockChamber", "cmbAerobicS", "txtAT401", "txtAT402", "txtAT403", "txtAT404",
+    "cmbAnaerobicS", "txtApH", "txtATemp", "txtADO", "txtABiogas", "cmbPostT", "cmbCent",
+    "txtWetsep", "txtMarineVessel", "txtStorm", "txtVWF", "txtRundown", "txt101", "txt100",
+    "txt313", "txt312", "txt410", "txt413", "txtPublic", "txtRoad", "txtMarine", "txtScrubbers",
+    "txtVWS", "txt401DO", "txt402DO", "txt403DO", "txt404DO", "txt401Temp", "txt402Temp",
+    "txt403Temp", "txt404Temp", "txt404pH", "timestamp"
+];
 
         const worksheetData = [
             headers,
