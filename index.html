@@ -1524,7 +1524,7 @@ const formatBridgeWasteTInput = (input) => {
         console.log(`Trimmed to: ${input.value}`);
     }
 };
-	
+
 // Save data to localStorage on every change
 const saveDataOnChange = () => {
     const formData = new FormData(document.getElementById('inspectionForm'));
@@ -1601,6 +1601,16 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('Time input formatting enabled');
         } else {
             console.warn('Time input (txtTime) not found');
+        }
+
+        // Add bridgeWasteT formatting to bridgeWasteT input
+        const bridgeWasteTInput = document.querySelector('input[name="bridgeWasteT"]');
+        if (bridgeWasteTInput) {
+            bridgeWasteTInput.addEventListener('input', () => formatBridgeWasteTInput(bridgeWasteTInput));
+            bridgeWasteTInput.addEventListener('change', () => formatBridgeWasteTInput(bridgeWasteTInput));
+            console.log('bridgeWasteT input formatting enabled');
+        } else {
+            console.warn('bridgeWasteT input not found');
         }
     }).catch(error => console.error('Initialization error:', error));
 });
