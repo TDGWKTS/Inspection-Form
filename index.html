@@ -1380,263 +1380,244 @@ input[type="text"], textarea {
     <button class="btn-export" id="exportExcelBtn">Export to Excel</button>
   </div>
 
- <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
-    let currentPage = 1;
-    const pages = ['page1', 'page2', 'page3', 'page4'];
-    let db;
-    let dbInitialized = false;
+let currentPage = 1;
+const pages = ['page1', 'page2', 'page3', 'page4'];
+let db;
+let dbInitialized = false;
 
-    const initDB = () => {
-        return new Promise((resolve, reject) => {
-            const request = indexedDB.open('InspectionDB', 3);
-
-            request.onupgradeneeded = (e) => {
-                console.log('Database upgrade needed');
-                db = e.target.result;
-                if (!db.objectStoreNames.contains('inspections')) {
-                    db.createObjectStore('inspections', { keyPath: 'timestamp' });
-                    console.log('Object store "inspections" created');
-                }
-            };
-
-            request.onsuccess = (e) => {
-                db = e.target.result;
-                dbInitialized = true;
-                console.log('Database initialized successfully');
-                setDefaultValues();
-                resolve(db);
-            };
-
-            request.onerror = (e) => {
-                console.error('Database error:', e.target.error);
-                showStatus(`Database error: ${e.target.error.message}. Please try refreshing.`, 'error');
-                reject(e.target.error);
-            };
-
-            request.onblocked = (e) => {
-                console.error('Database blocked:', e);
-                showStatus('Database is blocked. Please close other tabs.', 'error');
-                reject(new Error('Database blocked'));
-            };
-        });
-    };
-
-    const setDefaultValues = () => {
-        const now = new Date();
-        const day = String(now.getDate()).padStart(2, '0');
-        const month = String(now.getMonth() + 1).padStart(2, '0');
-        const year = now.getFullYear();
-        document.querySelector('input[name="txtDate"]').value = `${day}/${month}/${year}`;
-
-        const defaultValues = {
-            'cmbInspector': 'I(TD)43', 'cmbWeather': 'Sunny', 'cmbCCTV': 'Normal', 'cmbWeightDis': 'Yes',
-            'cmbPermitedW': 'Yes', 'cmboffQ': 'No', 'cmbtippingPermitedW': 'Yes', 'cmbtippingTraffic': 'Normal',
-            'cmbtippingCCTV': 'Normal', 'cmbGTW': 'Yes', 'cmbCurtain': 'Yes', 'cmbBefore': 'Normal',
-            'cmbAnaerobic': 'Normal', 'cmbFinal': 'Normal', 'cmbFilter': 'Normal', 'cmbBiogas': 'Normal',
-            'cmbPenstock': 'Open', 'cmbCleanliness': 'Yes', 'cmbMinutes': 'No', 'cmbHours': 'No',
-            'cmbPLC': 'Normal', 'cmbPreT': 'Normal', 'cmbPenstockChamber': 'Open', 'cmbAerobicS': 'Normal',
-            'cmbAnaerobicS': 'Normal', 'cmbPostT': 'Normal', 'cmbCent': 'Yes'
+// Initialize IndexedDB
+const initDB = () => {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open('InspectionDB', 3);
+        request.onupgradeneeded = (e) => {
+            db = e.target.result;
+            if (!db.objectStoreNames.contains('inspections')) {
+                db.createObjectStore('inspections', { keyPath: 'timestamp' });
+            }
         };
-
-        Object.entries(defaultValues).forEach(([name, value]) => {
-            const select = document.querySelector(`select[name="${name}"]`);
-            if (select) select.value = value;
-        });
-
-        const checkboxesToCheck = [
-            'chkScreen1', 'chkScreen3', 'chkDAF1', 'chkDAF2',
-            'chkCrane1', 'chkCrane2', 'chkWash1', 'chkWash2'
-        ];
-        checkboxesToCheck.forEach(name => {
-            const checkbox = document.querySelector(`input[name="${name}"]`);
-            if (checkbox) checkbox.checked = true;
-        });
-    };
-
-    const showPage = (pageNum) => {
-        pages.forEach(p => document.getElementById(p).classList.add('hidden'));
-        document.getElementById(`page${pageNum}`).classList.remove('hidden');
-    };
-
-    const showStatus = (message, type = 'success') => {
-        const status = document.getElementById('status');
-        status.textContent = '';
-        status.appendChild(document.createTextNode(message));
-        status.style.color = type === 'error' ? '#e74c3c' : '#27ae60';
-        setTimeout(() => status.textContent = '', 5000);
-    };
-
-    const validateForm = (data) => {
-        if (!data.txtDate) return "Date is required";
-        if (!data.txtTime.match(/^(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$/)) return "Invalid time format (HH:MM)";
-        if (!data.cmbInspector) return "Inspector is required";
-        if (!data.cmbWeather) return "Weather is required";
-        return null;
-    };
-
-    const showLoading = (pageNum, show) => {
-        document.getElementById(`loading${pageNum}`).style.display = show ? 'flex' : 'none';
-    };
-
-    const saveLocally = (data) => {
-        return new Promise((resolve, reject) => {
-            if (!dbInitialized || !db) {
-                reject(new Error('Database not initialized'));
-                return;
-            }
-            const tx = db.transaction('inspections', 'readwrite');
-            const store = tx.objectStore('inspections');
-            const request = store.add(data);
-
-            request.onsuccess = () => {
-                console.log('Data saved successfully:', data);
-                resolve();
-            };
-
-            request.onerror = (e) => {
-                console.error('Error saving data:', e.target.error);
-                reject(e.target.error);
-            };
-        });
-    };
-
-    const formatTimeInput = (input) => {
-        let value = input.value.replace(/[^0-9]/g, '');
-        if (value.length === 4) {
-            const hours = value.slice(0, 2);
-            const minutes = value.slice(2, 4);
-            if (hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59) {
-                input.value = `${hours}:${minutes}`;
-            } else {
-                input.value = '';
-                showStatus('Invalid time: Hours (00-23) or Minutes (00-59)', 'error');
-            }
-        }
-    };
-
-    const resetForm = () => {
-        const form = document.getElementById('inspectionForm');
-        
-        // Reset the form
-        form.reset();
-        console.log('Form reset called');
-
-        // Clear all localStorage
-        localStorage.clear();
-        console.log('LocalStorage cleared');
-
-        // Explicitly clear all inputs
-        document.querySelectorAll('input[type="text"], input[type="number"], textarea').forEach(input => {
-            input.value = '';
-            input.defaultValue = ''; // Reset default value as well
-            console.log(`Cleared input ${input.name}: ${input.value}`);
-        });
-
-        // Reset checkboxes
-        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-            checkbox.checked = false;
-            console.log(`Reset checkbox ${checkbox.name}`);
-        });
-
-        // Reset selects to first option
-        document.querySelectorAll('select').forEach(select => {
-            select.selectedIndex = 0;
-            console.log(`Reset select ${select.name} to ${select.value}`);
-        });
-
-        // Reapply default values after clearing
-        setDefaultValues();
-        console.log('Default values reapplied');
-    };
-
-   const scrollToTop = () => {
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth' // Optional: Adds a smooth scrolling effect
+        request.onsuccess = (e) => {
+            db = e.target.result;
+            dbInitialized = true;
+            resolve(db);
+        };
+        request.onerror = (e) => reject(e.target.error);
+        request.onblocked = () => reject(new Error('Database blocked'));
     });
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM loaded, initializing DB...');
-    initDB()
-        .then(() => {
-            console.log('DB initialized, showing page 1');
-            showPage(1);
-            const timeInput = document.querySelector('input[name="txtTime"]');
-            timeInput.addEventListener('input', (e) => formatTimeInput(e.target));
-        })
-        .catch((error) => console.error('Initialization error:', error));
-});
-
-document.querySelector('.container').addEventListener('click', (e) => {
-    const targetId = e.target.id;
-    if (targetId.startsWith('next') && currentPage < pages.length) {
-        currentPage++;
-        showPage(currentPage);
-        scrollToTop(); // Scroll to top when going to the next page
-    } else if (targetId.startsWith('prev') && currentPage > 1) {
-        currentPage--;
-        showPage(currentPage);
-        scrollToTop(); // Scroll to top when going to the previous page
+// Set default values for form fields, including all default checkboxes
+const setDefaultValues = () => {
+    const now = new Date();
+    const dateInput = document.querySelector('input[name="txtDate"]');
+    if (dateInput) {
+        dateInput.value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+        console.log('Set default date:', dateInput.value);
+    } else {
+        console.warn('Date input not found');
     }
-});
 
-    document.getElementById('inspectionForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        console.log('Form submission started');
-        showLoading(4, true);
-
-        try {
-            const formData = new FormData(e.target);
-            const data = Object.fromEntries(formData.entries());
-            data.timestamp = new Date().toISOString();
-            console.log('Form data collected:', data);
-
-            const timeInput = document.querySelector('input[name="txtTime"]');
-            if (!timeInput.value) {
-                const now = new Date();
-                timeInput.value = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-                data.txtTime = timeInput.value;
-            }
-
-            const checkboxes = [
-                "chkWeightbridge1", "chkWeightbridge2", "chkWeightbridge3", "chkWeightbridge4",
-                "chktipping1", "chktipping2", "chkC1", "chkC2", "chkC3", "chkC4", "chkC5",
-                "chkC6", "chkC7", "chkC8", "chkC9", "chkC10", "chkScreen1", "chkScreen2",
-                "chkScreen3", "chkDAF1", "chkDAF2", "chkCrane1", "chkCrane2", "chkCHU1",
-                "chkCHU2", "chkLaiwan", "chkNgonshuen", "chkWash1", "chkWash2", "chkWash3",
-                "chkScrubber1", "chkScrubber2", "chkScrubber3", "chkScrubber4", "chkScrubber5",
-                "chkT300", "chkT401", "chkT402", "chkT403", "chkT404", "chkMF1", "chkMF2",
-                "chkMF3", "chkMF4", "chkMF5", "chkMF6"
-            ];
-
-            checkboxes.forEach(name => {
-                data[name] = formData.has(name) ? "true" : "false";
-            });
-
-            const validationError = validateForm(data);
-            if (validationError) {
-                console.warn('Validation failed:', validationError);
-                showStatus(validationError, 'error');
-                showLoading(4, false);
-                return;
-            }
-
-            console.log('Attempting to save data locally...');
-            await saveLocally(data);
-            console.log('Data saved successfully');
-            showStatus('Data saved locally!');
-        } catch (error) {
-            console.error('Save failed:', error);
-            showStatus(`Failed to save data: ${error.message}`, 'error');
-        } finally {
-            console.log('Submission process completed');
-            showLoading(4, false);
+    const defaultValues = {
+        'cmbInspector': 'I(TD)43', 'cmbWeather': 'Sunny', 'cmbCCTV': 'Normal', 'cmbWeightDis': 'Yes',
+        'cmbPermitedW': 'Yes', 'cmboffQ': 'No', 'cmbtippingPermitedW': 'Yes', 'cmbtippingTraffic': 'Normal',
+        'cmbtippingCCTV': 'Normal', 'cmbGTW': 'Yes', 'cmbCurtain': 'Yes', 'cmbBefore': 'Normal',
+        'cmbAnaerobic': 'Normal', 'cmbFinal': 'Normal', 'cmbFilter': 'Normal', 'cmbBiogas': 'Normal',
+        'cmbPenstock': 'Open', 'cmbCleanliness': 'Yes', 'cmbMinutes': 'No', 'cmbHours': 'No',
+        'cmbPLC': 'Normal', 'cmbPreT': 'Normal', 'cmbPenstockChamber': 'Open', 'cmbAerobicS': 'Normal',
+        'cmbAnaerobicS': 'Normal', 'cmbPostT': 'Normal', 'cmbCent': 'Yes'
+    };
+    Object.entries(defaultValues).forEach(([name, value]) => {
+        const select = document.querySelector(`select[name="${name}"]`);
+        if (select) {
+            select.value = value;
+            console.log(`Set default for ${name}: ${value}`);
+        } else {
+            console.warn(`Select ${name} not found`);
         }
     });
 
-   document.getElementById('exportExcelBtn').addEventListener('click', async (e) => {
+    const defaultChecked = [
+        'chkScreen1', 'chkScreen3', 'chkDAF1', 'chkDAF2', 'chkCrane1', 'chkCrane2', 'chkWash1', 'chkWash2',
+        'chkWeightbridge1', 'chkWeightbridge2', 'chkWeightbridge3', 'chkC2', 'chkMF1', 'chkC3', 'chkMF2',
+        'chkC4', 'chkMF3', 'chkC5', 'chkMF4', 'chkC6', 'chkMF5', 'chkC7', 'chkMF6', 'chkC8', 'chkC9',
+        'chkC10', 'chktipping1', 'chkT300', 'chkT401', 'chkT402', 'chkT403', 'chkT404'
+    ];
+    defaultChecked.forEach(name => {
+        const checkbox = document.querySelector(`input[name="${name}"]`);
+        if (checkbox) {
+            checkbox.checked = true;
+            checkbox.dispatchEvent(new Event('change'));
+            console.log(`Set ${name} to checked`);
+        } else {
+            console.warn(`Checkbox ${name} not found in DOM`);
+        }
+    });
+};
+
+// Load saved data from localStorage, only overriding if explicitly set
+const loadSavedData = () => {
+    const savedData = JSON.parse(localStorage.getItem('inspectionFormData') || '{}');
+    console.log('Saved data from localStorage:', savedData);
+
+    document.querySelectorAll('input, select, textarea').forEach(element => {
+        if (Object.prototype.hasOwnProperty.call(savedData, element.name)) {
+            if (element.type === 'checkbox') {
+                const defaultChecked = [
+                    'chkScreen1', 'chkScreen3', 'chkDAF1', 'chkDAF2', 'chkCrane1', 'chkCrane2', 'chkWash1', 'chkWash2',
+                    'chkWeightbridge1', 'chkWeightbridge2', 'chkWeightbridge3', 'chkC2', 'chkMF1', 'chkC3', 'chkMF2',
+                    'chkC4', 'chkMF3', 'chkC5', 'chkMF4', 'chkC6', 'chkMF5', 'chkC7', 'chkMF6', 'chkC8', 'chkC9',
+                    'chkC10', 'chktipping1', 'chkT300', 'chkT401', 'chkT402', 'chkT403', 'chkT404'
+                ].includes(element.name);
+                const savedValue = savedData[element.name] === 'true';
+                if (!defaultChecked || savedValue !== defaultChecked) {
+                    element.checked = savedValue;
+                    console.log(`Loaded ${element.name}: ${defaultChecked} -> ${element.checked}`);
+                }
+            } else {
+                element.value = savedData[element.name];
+                console.log(`Loaded saved value for ${element.name}: ${element.value}`);
+            }
+        }
+    });
+};
+
+// Format time input (e.g., "1423" -> "14:23")
+const formatTimeInput = (input) => {
+    let value = input.value.replace(/\D/g, ''); // Remove non-digits
+    if (value.length === 4) {
+        const hours = value.slice(0, 2);
+        const minutes = value.slice(2, 4);
+        if (hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59) {
+            input.value = `${hours}:${minutes}`;
+            console.log(`Formatted time: ${input.value}`);
+        } else {
+            input.value = ''; // Clear invalid input
+            console.warn(`Invalid time input: ${value}`);
+        }
+    } else if (value.length > 4) {
+        input.value = value.slice(0, 4); // Trim to 4 digits if too long
+    }
+};
+
+// Save data to localStorage on every change
+const saveDataOnChange = () => {
+    const formData = new FormData(document.getElementById('inspectionForm'));
+    const data = Object.fromEntries(formData.entries());
+    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+        data[checkbox.name] = checkbox.checked ? 'true' : 'false';
+    });
+    localStorage.setItem('inspectionFormData', JSON.stringify(data));
+};
+
+// Show/hide pages
+const showPage = (pageNum) => {
+    pages.forEach(p => document.getElementById(p).classList.add('hidden'));
+    document.getElementById(`page${pageNum}`).classList.remove('hidden');
+};
+
+// Status messages
+const showStatus = (message, type = 'success') => {
+    const status = document.getElementById('status');
+    status.textContent = message;
+    status.style.color = type === 'error' ? '#e74c3c' : '#27ae60';
+    setTimeout(() => status.textContent = '', 5000);
+};
+
+// Save to IndexedDB
+const saveLocally = (data) => {
+    return new Promise((resolve, reject) => {
+        if (!dbInitialized || !db) reject(new Error('Database not initialized'));
+        const tx = db.transaction('inspections', 'readwrite');
+        const store = tx.objectStore('inspections');
+        store.add(data).onsuccess = resolve;
+        store.onerror = (e) => reject(e.target.error);
+    });
+};
+
+// Reset form and clear storage
+const resetForm = () => {
+    document.getElementById('inspectionForm').reset();
+    localStorage.removeItem('inspectionFormData');
+    setDefaultValues();
+};
+
+// Validate form
+const validateForm = (data) => {
+    if (!data.txtDate) return "Date is required";
+    if (!data.txtTime.match(/^(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$/)) return "Invalid time format (HH:MM)";
+    if (!data.cmbInspector) return "Inspector is required";
+    if (!data.cmbWeather) return "Weather is required";
+    return null;
+};
+
+// Show loading
+const showLoading = (pageNum, show) => {
+    document.getElementById(`loading${pageNum}`).style.display = show ? 'flex' : 'none';
+};
+
+// Event Listeners
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM fully loaded, setting up form');
+    setDefaultValues();
+    initDB().then(() => {
+        loadSavedData();
+        showPage(1);
+        document.querySelectorAll('input, select, textarea').forEach(element => {
+            element.addEventListener('change', saveDataOnChange);
+            element.addEventListener('input', saveDataOnChange);
+        });
+
+        // Add time formatting to txtTime input
+        const timeInput = document.querySelector('input[name="txtTime"]');
+        if (timeInput) {
+            timeInput.addEventListener('input', () => formatTimeInput(timeInput));
+            timeInput.addEventListener('change', () => formatTimeInput(timeInput));
+            console.log('Time input formatting enabled');
+        } else {
+            console.warn('Time input (txtTime) not found');
+        }
+    }).catch(error => console.error('Initialization error:', error));
+});
+
+document.querySelector('.container').addEventListener('click', (e) => {
+    if (e.target.id.startsWith('next') && currentPage < pages.length) {
+        currentPage++;
+        showPage(currentPage);
+    } else if (e.target.id.startsWith('prev') && currentPage > 1) {
+        currentPage--;
+        showPage(currentPage);
+    }
+});
+
+document.getElementById('inspectionForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    showLoading(4, true);
+    try {
+        const formData = new FormData(e.target);
+        const data = Object.fromEntries(formData.entries());
+        data.timestamp = new Date().toISOString();
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            data[checkbox.name] = checkbox.checked ? 'true' : 'false';
+        });
+
+        const validationError = validateForm(data);
+        if (validationError) {
+            showStatus(validationError, 'error');
+            return;
+        }
+
+        await saveLocally(data);
+        showStatus('Data saved locally!');
+        resetForm();
+    } catch (error) {
+        showStatus(`Failed to save data: ${error.message}`, 'error');
+    } finally {
+        showLoading(4, false);
+    }
+});
+
+document.getElementById('exportExcelBtn').addEventListener('click', async (e) => {
     e.preventDefault();
     if (typeof XLSX === 'undefined') {
         showStatus('Excel library not loaded. Check your connection.', 'error');
@@ -1648,7 +1629,6 @@ document.querySelector('.container').addEventListener('click', (e) => {
 
     try {
         if (!dbInitialized || !db) {
-            console.log('Database not initialized, retrying...');
             await initDB();
             if (!dbInitialized) throw new Error('Database failed to initialize');
         }
@@ -1666,18 +1646,16 @@ document.querySelector('.container').addEventListener('click', (e) => {
             return;
         }
 
-        // List of fields to convert to uppercase
         const uppercaseFields = [
             'bridgeWasteV', 'bridgeWasteT', 'tippingWasteV', 'tippingWasteT', 'txtC1', 'txtC2', 'txtC3', 'txtC4', 
             'txtC5', 'txtC6', 'txtC7', 'txtC8', 'txtC9', 'txtC10'
         ];
 
-        // Convert specific text fields to uppercase
         const uppercaseData = data.map(item => {
-            const newItem = { ...item }; // Create a copy of the item
+            const newItem = { ...item };
             uppercaseFields.forEach(field => {
                 if (newItem[field] && typeof newItem[field] === 'string') {
-                    newItem[field] = newItem[field].toUpperCase(); // Convert to uppercase
+                    newItem[field] = newItem[field].toUpperCase();
                 }
             });
             return newItem;
@@ -1718,29 +1696,29 @@ document.querySelector('.container').addEventListener('click', (e) => {
         ];
 
         const fieldNames = [
-    "txtDate", "cmbInspector", "txtTime", "cmbWeather", "chkWeightbridge1", "chkWeightbridge2",
-    "chkWeightbridge3", "chkWeightbridge4", "cmbCCTV", "cmbWeightDis", "bridgeWasteV",
-    "bridgeWasteT", "cmbPermitedW", "cmboffQ", "chktipping1", "chktipping2", "tippingWasteV",
-    "tippingWasteT", "cmbtippingPermitedW", "cmbtippingTraffic", "cmbtippingCCTV", "txtfPress",
-    "chkC1", "txtC1", "chkC2", "txtC2", "chkMF1", "chkC3", "txtC3", "chkMF2", "chkC4",
-    "txtC4", "chkMF3", "chkC5", "txtC5", "chkMF4", "chkC6", "txtC6", "chkMF5", "chkC7",
-    "txtC7", "chkMF6", "chkC8", "txtC8", "chkC9", "txtC9", "chkC10", "txtC10", "chkScreen1",
-    "chkScreen2", "chkScreen3", "txt1A", "txt1B", "txt2A", "txt2B", "chkDAF1", "chkDAF2",
-    "cmbGTW", "chkCrane1", "chkCrane2", "chkCHU1", "chkCHU2", "txt145B", "txt550FV",
-    "txt155W", "txtOthers", "chkLaiwan", "chkNgonshuen", "chkWash1", "chkWash2", "chkWash3",
-    "cmbCleanliness", "cmbMinutes", "cmbHours", "cmbCurtain", "chkScrubber1", "chkScrubber2",
-    "chkScrubber3", "chkScrubber4", "chkScrubber5", "txtAcid1", "txtAcid2", "txtAcid4",
-    "txtAcid5", "txtAlk1", "txtAlk2", "txtAlk3", "txtAlk4", "txtAlk5", "txtORP1", "txtORP2",
-    "txtORP3", "txtORP4", "txtORP5", "cmbBefore", "cmbAnaerobic", "chkT300", "chkT401",
-    "chkT402", "chkT403", "chkT404", "cmbFinal", "cmbFilter", "cmbBiogas", "cmbPenstock",
-    "txtRemarks1", "txtRemarks2", "txtRemarks3", "txtRemarks4", "cmbPLC", "cmbPreT",
-    "cmbPenstockChamber", "cmbAerobicS", "txtAT401", "txtAT402", "txtAT403", "txtAT404",
-    "cmbAnaerobicS", "txtApH", "txtATemp", "txtADO", "txtABiogas", "cmbPostT", "cmbCent",
-    "txtWetsep", "txtMarineVessel", "txtStorm", "txtVWF", "txtRundown", "txt101", "txt100",
-    "txt313", "txt312", "txt410", "txt413", "txtPublic", "txtRoad", "txtMarine", "txtScrubbers",
-    "txtVWS", "txt401DO", "txt402DO", "txt403DO", "txt404DO", "txt401Temp", "txt402Temp",
-    "txt403Temp", "txt404Temp", "txt404pH", "timestamp"
-];
+            "txtDate", "cmbInspector", "txtTime", "cmbWeather", "chkWeightbridge1", "chkWeightbridge2",
+            "chkWeightbridge3", "chkWeightbridge4", "cmbCCTV", "cmbWeightDis", "bridgeWasteV",
+            "bridgeWasteT", "cmbPermitedW", "cmboffQ", "chktipping1", "chktipping2", "tippingWasteV",
+            "tippingWasteT", "cmbtippingPermitedW", "cmbtippingTraffic", "cmbtippingCCTV", "txtfPress",
+            "chkC1", "txtC1", "chkC2", "txtC2", "chkMF1", "chkC3", "txtC3", "chkMF2", "chkC4",
+            "txtC4", "chkMF3", "chkC5", "txtC5", "chkMF4", "chkC6", "txtC6", "chkMF5", "chkC7",
+            "txtC7", "chkMF6", "chkC8", "txtC8", "chkC9", "txtC9", "chkC10", "txtC10", "chkScreen1",
+            "chkScreen2", "chkScreen3", "txt1A", "txt1B", "txt2A", "txt2B", "chkDAF1", "chkDAF2",
+            "cmbGTW", "chkCrane1", "chkCrane2", "chkCHU1", "chkCHU2", "txt145B", "txt550FV",
+            "txt155W", "txtOthers", "chkLaiwan", "chkNgonshuen", "chkWash1", "chkWash2", "chkWash3",
+            "cmbCleanliness", "cmbMinutes", "cmbHours", "cmbCurtain", "chkScrubber1", "chkScrubber2",
+            "chkScrubber3", "chkScrubber4", "chkScrubber5", "txtAcid1", "txtAcid2", "txtAcid4",
+            "txtAcid5", "txtAlk1", "txtAlk2", "txtAlk3", "txtAlk4", "txtAlk5", "txtORP1", "txtORP2",
+            "txtORP3", "txtORP4", "txtORP5", "cmbBefore", "cmbAnaerobic", "chkT300", "chkT401",
+            "chkT402", "chkT403", "chkT404", "cmbFinal", "cmbFilter", "cmbBiogas", "cmbPenstock",
+            "txtRemarks1", "txtRemarks2", "txtRemarks3", "txtRemarks4", "cmbPLC", "cmbPreT",
+            "cmbPenstockChamber", "cmbAerobicS", "txtAT401", "txtAT402", "txtAT403", "txtAT404",
+            "cmbAnaerobicS", "txtApH", "txtATemp", "txtADO", "txtABiogas", "cmbPostT", "cmbCent",
+            "txtWetsep", "txtMarineVessel", "txtStorm", "txtVWF", "txtRundown", "txt101", "txt100",
+            "txt313", "txt312", "txt410", "txt413", "txtPublic", "txtRoad", "txtMarine", "txtScrubbers",
+            "txtVWS", "txt401DO", "txt402DO", "txt403DO", "txt404DO", "txt401Temp", "txt402Temp",
+            "txt403Temp", "txt404Temp", "txt404pH", "timestamp"
+        ];
 
         const worksheetData = [
             headers,
@@ -1766,10 +1744,7 @@ document.querySelector('.container').addEventListener('click', (e) => {
                 const tx = db.transaction('inspections', 'readwrite');
                 const store = tx.objectStore('inspections');
                 const request = store.clear();
-                request.onsuccess = () => {
-                    console.log('IndexedDB cleared');
-                    resolve();
-                };
+                request.onsuccess = () => resolve();
                 request.onerror = (e) => reject(e.target.error);
             });
         };
@@ -1782,10 +1757,8 @@ document.querySelector('.container').addEventListener('click', (e) => {
                 element.dispatchEvent(new Event('change'));
                 element.dispatchEvent(new Event('input'));
             });
-            console.log('DOM refresh forced');
             showStatus('Data exported successfully and form cleared');
         }, 100);
-
     } catch (error) {
         console.error('Export error:', error);
         showStatus(`Export failed: ${error.message}`, 'error');
