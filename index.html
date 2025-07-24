@@ -7,25 +7,24 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {
-       background-color: #f0f2f5;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    padding: 15px; /* Reduced padding for mobile */
-    margin: 0;
-    overflow-x: hidden;
-}
-
-.page-container {
-    background-color: #ffffff;
-    padding: 15px; /* Reduced padding for mobile */
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    width: 100%; /* Changed from fixed 1200px */
-    max-width: 1200px; /* Added max-width instead */
-    margin-left: auto;
-    margin-right: auto;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    position: relative;
+      background-color: #f0f2f5;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 15px;
+      margin: 0;
+      overflow-x: hidden;
+    }
+    .page-container {
+      background-color: #ffffff;
+      padding: 15px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      width: 100%;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      position: relative;
     }
     .page-header {
       color: #ffffff;
@@ -193,158 +192,57 @@
       animation: spin 1s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-    /* Enhanced Media Queries */
-@media (max-width: 1024px) {
-    .page-container {
-        padding: 15px;
+    @media (max-width: 1024px) {
+      .page-container { padding: 15px; }
+      .form-label { width: 120px; margin-right: 10px; }
+      .form-control, .form-select { width: calc(100% - 130px); }
     }
-    
-    .form-label {
-        width: 120px;
-        margin-right: 10px;
+    @media (max-width: 768px) {
+      .page-container { padding: 10px; }
+      .form-label { width: 100%; float: none; margin-right: 0; line-height: 1.5; margin-bottom: 5px; }
+      .form-control, .form-select { width: 100%; font-size: 0.9rem; }
+      .field-group { margin-bottom: 15px; flex-direction: column; align-items: flex-start; }
+      .navigation-buttons { flex-direction: column; gap: 10px; justify-content: center; align-items: stretch; }
+      .btn-previous, .btn-next, .btn-save { width: 100%; padding: 12px; }
     }
-    
-    .form-control, .form-select {
-        width: calc(100% - 130px);
+    @media (max-width: 480px) {
+      body { padding: 10px; }
+      .page-header { font-size: 1.2rem; padding: 8px; }
+      .section-header { font-size: 1rem; }
+      .form-control, .form-select { height: 40px; font-size: 0.85rem; }
+      .form-check-input { transform: scale(1.2); }
+      .btn-export { padding: 10px 20px; font-size: 0.9rem; }
     }
-}
-
-@media (max-width: 768px) {
-    .page-container {
-        padding: 10px;
+    @media (max-width: 896px) and (orientation: landscape) {
+      .page-container { padding: 10px; }
+      .form-label { width: 100px; font-size: 0.85rem; }
+      .form-control, .form-select { width: calc(100% - 110px); height: 32px; font-size: 0.85rem; }
+      .field-group { margin-bottom: 8px; }
+      .navigation-buttons { flex-direction: row; gap: 5px; }
+      .btn-previous, .btn-next, .btn-save { padding: 8px 15px; font-size: 0.9rem; }
+      .section-header { margin-top: 15px; margin-bottom: 10px; }
     }
-    
-    .form-label {
-        width: 100%;
-        float: none;
-        margin-right: 0;
-        line-height: 1.5;
-        margin-bottom: 5px;
+    @media (max-width: 667px) and (orientation: landscape) {
+      .form-label { width: 80px; }
+      .form-control, .form-select { width: calc(100% - 90px); }
+      .page-header { font-size: 1.1rem; }
     }
-    
-    .form-control, .form-select {
-        width: 100%;
-        font-size: 0.9rem;
-    }
-    
-    .field-group {
-        margin-bottom: 15px;
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    
-    .navigation-buttons {
-        flex-direction: column;
-        gap: 10px;
-        justify-content: center;
-        align-items: stretch;
-    }
-    
-    .btn-previous, .btn-next, .btn-save {
-        width: 100%;
-        padding: 12px;
-    }
-}
-
-@media (max-width: 480px) {
-    body {
-        padding: 10px;
-    }
-    
-    .page-header {
-        font-size: 1.2rem;
-        padding: 8px;
-    }
-    
-    .section-header {
-        font-size: 1rem;
-    }
-    
-    .form-control, .form-select {
-        height: 40px;
-        font-size: 0.85rem;
-    }
-    
-    .form-check-input {
-        transform: scale(1.2);
-    }
-    
-    .btn-export {
-        padding: 10px 20px;
-        font-size: 0.9rem;
-    }
-}
-
-/* Landscape orientation specific adjustments */
-@media (max-width: 896px) and (orientation: landscape) {
-    .page-container {
-        padding: 10px;
-    }
-    
-    .form-label {
-        width: 100px;
-        font-size: 0.85rem;
-    }
-    
-    .form-control, .form-select {
-        width: calc(100% - 110px);
-        height: 32px;
-        font-size: 0.85rem;
-    }
-    
-    .field-group {
-        margin-bottom: 8px;
-    }
-    
-    .navigation-buttons {
-        flex-direction: row;
-        gap: 5px;
-    }
-    
-    .btn-previous, .btn-next, .btn-save {
-        padding: 8px 15px;
-        font-size: 0.9rem;
-    }
-    
-    .section-header {
-        margin-top: 15px;
-        margin-bottom: 10px;
-    }
-}
-
-/* Small phones in landscape */
-@media (max-width: 667px) and (orientation: landscape) {
-    .form-label {
-        width: 80px;
-    }
-    
-    .form-control, .form-select {
-        width: calc(100% - 90px);
-    }
-    
-    .page-header {
-        font-size: 1.1rem;
-    }
-}
-/* Add this CSS to make text uppercase */
-input[type="text"], textarea {
-    text-transform: uppercase;
-}
-</style>
+    input[type="text"], textarea { text-transform: uppercase; }
+  </style>
 </head>
 <body>
   <div class="container">
     <form id="inspectionForm">
-      <!-- Page 1: Weightbridge System -->
+      <!-- Page 1: Vehicle Wash & Tank Farm -->
       <div id="page1" class="page-container">
         <div class="loading-overlay" id="loading1"><div class="spinner"></div></div>
-                <h2 class="page-header">Vehicle Wash & Tank Farm</h2>
+        <h2 class="page-header">Vehicle Wash & Tank Farm</h2>
         <div class="row">
           <div class="col-md-12 field-group">
             <h3 class="section-header">Vehicle Wash</h3>
           </div>
         </div>
-	<div class="row">
+        <div class="row">
           <div class="col-md-4 field-group">
             <div class="form-label">Vehicle Wash 1</div>
             <div class="form-check">
@@ -359,15 +257,14 @@ input[type="text"], textarea {
               <label class="form-check-label">Checked</label>
             </div>
           </div>
-          </div>
-<div class="row">
-<div class="col-md-3 field-group">
+        </div>
+        <div class="row">
+          <div class="col-md-3 field-group">
             <div class="form-label">Storm Reading</div>
             <input type="text" class="form-control" name="txtStorm">
           </div>
-</div>
-
-<div class="row">
+        </div>
+        <div class="row">
           <div class="col-md-4 field-group">
             <div class="form-label">Cleanliness</div>
             <select class="form-select" name="cmbCleanliness">
@@ -390,12 +287,12 @@ input[type="text"], textarea {
             </select>
           </div>
         </div>
-<div class="row">
+        <div class="row">
           <div class="col-md-12 field-group">
             <h3 class="section-header">GTW Area</h3>
           </div>
         </div>
- <div class="row">
+        <div class="row">
           <div class="col-md-4 field-group">
             <div class="form-label">Screen 1</div>
             <div class="form-check">
@@ -458,15 +355,14 @@ input[type="text"], textarea {
               <option value="No">No</option>
             </select>
           </div>
-        </div>        
-
-     <div class="row">
+        </div>
+        <div class="row">
           <div class="col-md-12 field-group">
             <h3 class="section-header">Tank Farm Meters</h3>
           </div>
         </div>
-                <div class="row">
-			<div class="col-md-3 field-group">
+        <div class="row">
+          <div class="col-md-3 field-group">
             <div class="form-label">313</div>
             <input type="text" class="form-control" name="txt313">
           </div>
@@ -478,7 +374,7 @@ input[type="text"], textarea {
             <div class="form-label">101</div>
             <input type="text" class="form-control" name="txt101">
           </div>
-		<div class="col-md-3 field-group">
+          <div class="col-md-3 field-group">
             <div class="form-label">410</div>
             <input type="text" class="form-control" name="txt410">
           </div>
@@ -486,7 +382,7 @@ input[type="text"], textarea {
             <div class="form-label">100</div>
             <input type="text" class="form-control" name="txt100">
           </div>
- <div class="col-md-3 field-group">
+          <div class="col-md-3 field-group">
             <div class="form-label">Wetsep</div>
             <input type="text" class="form-control" name="txtWetsep">
           </div>
@@ -494,9 +390,8 @@ input[type="text"], textarea {
             <div class="form-label">Marine Vessel</div>
             <input type="text" class="form-control" name="txtMarineVessel">
           </div>
-
- <div class="row">
-        
+        </div>
+        <div class="row">
           <div class="col-md-4 field-group">
             <div class="form-label">AnaerobicS</div>
             <select class="form-select" name="cmbAnaerobicS">
@@ -505,8 +400,8 @@ input[type="text"], textarea {
             </select>
           </div>
         </div>
-<div class="row">         
-<div class="col-md-4 field-group">
+        <div class="row">
+          <div class="col-md-4 field-group">
             <div class="form-label">ApH</div>
             <input type="text" class="form-control" name="txtApH">
           </div>
@@ -539,7 +434,7 @@ input[type="text"], textarea {
             </select>
           </div>
         </div>
-<div class="row">
+        <div class="row">
           <div class="col-md-4 field-group">
             <div class="form-label">Lai Wan</div>
             <div class="form-check">
@@ -555,14 +450,12 @@ input[type="text"], textarea {
             </div>
           </div>
         </div>
-
-<div class="row">
+        <div class="row">
           <div class="col-md-12 field-group">
-            <h3 class="section-header">Tank Farm & Wastewaster Meters</h3>
+            <h3 class="section-header">Tank Farm & Wastewater Meters</h3>
           </div>
         </div>
-
-<div class="row">
+        <div class="row">
           <div class="col-md-3 field-group">
             <div class="form-label">PLC Condition</div>
             <select class="form-select" name="cmbPLC">
@@ -583,8 +476,7 @@ input[type="text"], textarea {
               <option value="Open">Open</option>
               <option value="Close">Close</option>
             </select>
-          </div>            
-        
+          </div>
           <div class="col-md-4 field-group">
             <div class="form-label">AerobicS</div>
             <select class="form-select" name="cmbAerobicS">
@@ -592,14 +484,13 @@ input[type="text"], textarea {
               <option value="Abnormal">Abnormal</option>
             </select>
           </div>
-</div>
-<div class="row">
-                      
- 	<div class="col-md-3 field-group">
+        </div>
+        <div class="row">
+          <div class="col-md-3 field-group">
             <div class="form-label">413</div>
             <input type="text" class="form-control" name="txt413">
           </div>
-     	 <div class="col-md-3 field-group">
+          <div class="col-md-3 field-group">
             <div class="form-label">VWF</div>
             <input type="text" class="form-control" name="txtVWF">
           </div>
@@ -608,85 +499,75 @@ input[type="text"], textarea {
             <input type="text" class="form-control" name="txtRundown">
           </div>
         </div>
-
-<div class="row">
+        <div class="row">
           <div class="col-md-4 field-group">
             <div class="form-label">AT401</div>
             <input type="text" class="form-control" name="txtAT401">
           </div>
-<div class="col-md-4 field-group">
+          <div class="col-md-4 field-group">
             <div class="form-label">401 DO</div>
             <input type="text" class="form-control" name="txt401DO">
           </div>
-<div class="col-md-4 field-group">
+          <div class="col-md-4 field-group">
             <div class="form-label">401 Temp</div>
             <input type="text" class="form-control" name="txt401Temp">
           </div>
-</div>
-	<div class="row">
+        </div>
+        <div class="row">
           <div class="col-md-4 field-group">
             <div class="form-label">AT402</div>
             <input type="text" class="form-control" name="txtAT402">
           </div>
-	<div class="col-md-4 field-group">
+          <div class="col-md-4 field-group">
             <div class="form-label">402 DO</div>
             <input type="text" class="form-control" name="txt402DO">
           </div>
-	<div class="col-md-4 field-group">
+          <div class="col-md-4 field-group">
             <div class="form-label">402 Temp</div>
             <input type="text" class="form-control" name="txt402Temp">
           </div>
-	</div>
-	<div class="row">
+        </div>
+        <div class="row">
           <div class="col-md-4 field-group">
             <div class="form-label">AT403</div>
             <input type="text" class="form-control" name="txtAT403">
           </div>
-	<div class="col-md-4 field-group">
+          <div class="col-md-4 field-group">
             <div class="form-label">403 DO</div>
             <input type="text" class="form-control" name="txt403DO">
           </div>
-	<div class="col-md-4 field-group">
+          <div class="col-md-4 field-group">
             <div class="form-label">403 Temp</div>
             <input type="text" class="form-control" name="txt403Temp">
           </div>
-	</div>
-	<div class="row">
+        </div>
+        <div class="row">
           <div class="col-md-4 field-group">
             <div class="form-label">AT404</div>
             <input type="text" class="form-control" name="txtAT404">
           </div>
-	<div class="col-md-4 field-group">
+          <div class="col-md-4 field-group">
             <div class="form-label">404 DO</div>
             <input type="text" class="form-control" name="txt404DO">
           </div>
-	<div class="col-md-4 field-group">
+          <div class="col-md-4 field-group">
             <div class="form-label">404 Temp</div>
             <input type="text" class="form-control" name="txt404Temp">
           </div>
-
           <div class="col-md-4 field-group">
             <div class="form-label">404 pH</div>
             <input type="text" class="form-control" name="txt404pH">
           </div>
-	</div>
-	</div>
-
-
+        </div>
         <div class="navigation-buttons">
           <button type="button" class="btn-next" id="next1">Next</button>
         </div>
       </div>
-
-
-<!-- Page 2: Tipping Operation -->
+      <!-- Page 2: Tipping Operation -->
       <div id="page2" class="page-container hidden">
         <div class="loading-overlay" id="loading2"><div class="spinner"></div></div>
-        
-<h2 class="page-header">Air Monitoring</h2>
-        
-
-<div class="row">
+        <h2 class="page-header">Air Monitoring</h2>
+        <div class="row">
           <div class="col-md-12 field-group">
             <h3 class="section-header">Compactors & Equipment</h3>
           </div>
@@ -872,7 +753,7 @@ input[type="text"], textarea {
             <h3 class="section-header">Crane</h3>
           </div>
         </div>
- <div class="row">
+        <div class="row">
           <div class="col-md-4 field-group">
             <div class="form-label">Crane 1</div>
             <div class="form-check">
@@ -887,8 +768,8 @@ input[type="text"], textarea {
               <label class="form-check-label">Checked</label>
             </div>
           </div>
-       
- <div class="row">
+        </div>
+        <div class="row">
           <div class="col-md-4 field-group">
             <div class="form-label">CHU 1</div>
             <div class="form-check">
@@ -904,22 +785,15 @@ input[type="text"], textarea {
             </div>
           </div>
         </div>
-</div>
-
         <div class="navigation-buttons">
           <button type="button" class="btn-previous" id="prev2">Previous</button>
           <button type="button" class="btn-next" id="next2">Next</button>
         </div>
       </div>
-
-
-
-
       <!-- Page 3: Air Monitoring -->
       <div id="page3" class="page-container hidden">
         <div class="loading-overlay" id="loading3"><div class="spinner"></div></div>
-        <h2 class="page-header">Air Monitoring</h2>       
-
+        <h2 class="page-header">Air Monitoring</h2>
         <div class="row">
           <div class="col-md-4 field-group">
             <div class="form-label">Air Curtain</div>
@@ -971,63 +845,63 @@ input[type="text"], textarea {
             <div class="form-label">Acid Stage 5</div>
             <input type="text" class="form-control" name="txtAcid5">
           </div>
-	<div class="col-md-3 field-group">
+          <div class="col-md-3 field-group">
             <div class="form-label">Alk Stage 5</div>
             <input type="text" class="form-control" name="txtAlk5">
           </div>
-	<div class="col-md-3 field-group">
+          <div class="col-md-3 field-group">
             <div class="form-label">ORP Range 5</div>
             <input type="text" class="form-control" name="txtORP5">
           </div>
         </div>
-         <div class="row">
+        <div class="row">
           <div class="col-md-3 field-group">
             <div class="form-label">Acid Stage 4</div>
             <input type="text" class="form-control" name="txtAcid4">
           </div>
-	<div class="col-md-3 field-group">
+          <div class="col-md-3 field-group">
             <div class="form-label">Alk Stage 4</div>
             <input type="text" class="form-control" name="txtAlk4">
           </div>
-	<div class="col-md-3 field-group">
+          <div class="col-md-3 field-group">
             <div class="form-label">ORP Range 4</div>
             <input type="text" class="form-control" name="txtORP4">
           </div>
         </div>
-         <div class="row">
+        <div class="row">
           <div class="col-md-3 field-group">
-          	   <div class="form-label">Alk Stage 3</div>
+            <div class="form-label">Alk Stage 3</div>
             <input type="text" class="form-control" name="txtAlk3">
           </div>
-	<div class="col-md-4 field-group">
+          <div class="col-md-4 field-group">
             <div class="form-label">ORP Range 3</div>
             <input type="text" class="form-control" name="txtORP3">
           </div>
         </div>
- <div class="row">
+        <div class="row">
           <div class="col-md-3 field-group">
             <div class="form-label">Acid Stage 2</div>
             <input type="text" class="form-control" name="txtAcid2">
           </div>
-	<div class="col-md-3 field-group">
+          <div class="col-md-3 field-group">
             <div class="form-label">Alk Stage 2</div>
             <input type="text" class="form-control" name="txtAlk2">
           </div>
-	<div class="col-md-3 field-group">
+          <div class="col-md-3 field-group">
             <div class="form-label">ORP Range 2</div>
             <input type="text" class="form-control" name="txtORP2">
           </div>
         </div>
- <div class="row">
+        <div class="row">
           <div class="col-md-3 field-group">
             <div class="form-label">Acid Stage 1</div>
             <input type="text" class="form-control" name="txtAcid1">
           </div>
-	<div class="col-md-3 field-group">
+          <div class="col-md-3 field-group">
             <div class="form-label">Alk Stage 1</div>
             <input type="text" class="form-control" name="txtAlk1">
           </div>
-	<div class="col-md-3 field-group">
+          <div class="col-md-3 field-group">
             <div class="form-label">ORP Range 1</div>
             <input type="text" class="form-control" name="txtORP1">
           </div>
@@ -1122,8 +996,8 @@ input[type="text"], textarea {
             </select>
           </div>
         </div>
- <div class="row">
-	<div class="col-md-3 field-group">
+        <div class="row">
+          <div class="col-md-3 field-group">
             <div class="form-label">Marine</div>
             <input type="text" class="form-control" name="txtMarine">
           </div>
@@ -1131,7 +1005,7 @@ input[type="text"], textarea {
             <div class="form-label">Public</div>
             <input type="text" class="form-control" name="txtPublic">
           </div>
-	<div class="col-md-3 field-group">
+          <div class="col-md-3 field-group">
             <div class="form-label">VWS</div>
             <input type="text" class="form-control" name="txtVWS">
           </div>
@@ -1139,24 +1013,20 @@ input[type="text"], textarea {
             <div class="form-label">Road</div>
             <input type="text" class="form-control" name="txtRoad">
           </div>
-                    <div class="col-md-3 field-group">
+          <div class="col-md-3 field-group">
             <div class="form-label">Scrubbers</div>
             <input type="text" class="form-control" name="txtScrubbers">
           </div>
-           </div>
-
-
+        </div>
         <div class="navigation-buttons">
           <button type="button" class="btn-previous" id="prev3">Previous</button>
           <button type="button" class="btn-next" id="next3">Next</button>
         </div>
       </div>
-
       <!-- Page 4: Meter Reading -->
       <div id="page4" class="page-container hidden">
-        <div class="loading-overlay" id="loading4"><div class="spinner"></div></div>             
-	
-<h2 class="page-header">Weightbridge System</h2>
+        <div class="loading-overlay" id="loading4"><div class="spinner"></div></div>
+        <h2 class="page-header">Weightbridge System</h2>
         <div class="row">
           <div class="col-md-3 field-group">
             <div class="form-label">Date</div>
@@ -1326,7 +1196,7 @@ input[type="text"], textarea {
             </select>
           </div>
         </div>
-<div class="row">
+        <div class="row">
           <div class="col-md-3 field-group">
             <div class="form-label">145B</div>
             <input type="text" class="form-control" name="txt145B">
@@ -1344,9 +1214,7 @@ input[type="text"], textarea {
             <input type="text" class="form-control" name="txtOthers">
           </div>
         </div>
-
-	
- 	<div class="row">
+        <div class="row">
           <div class="col-md-12 field-group">
             <h3 class="section-header">Remarks</h3>
           </div>
@@ -1369,8 +1237,7 @@ input[type="text"], textarea {
             <input type="text" class="form-control" name="txtRemarks4">
           </div>
         </div>
-        
-	<div class="row">
+        <div class="row">
           <div class="col-md-12 field-group">
             <h3 class="section-header">Wheelstoppers & DG</h3>
           </div>
@@ -1388,7 +1255,7 @@ input[type="text"], textarea {
             </div>
           </div>
           <div class="col-md-3 field-group">
-            <div class="form-label">Wheelstoppers Reamrk</div>
+            <div class="form-label">Wheelstoppers Remark</div>
             <input type="text" class="form-control" name="txtWheelstoppers">
           </div>
           <div class="col-md-3 field-group">
@@ -1399,9 +1266,7 @@ input[type="text"], textarea {
             </select>
           </div>
         </div>
-
-
-    <div class="navigation-buttons">
+        <div class="navigation-buttons">
           <button type="button" class="btn-previous" id="prev4">Previous</button>
           <button type="submit" class="btn-save" id="save">Save</button>
         </div>
@@ -1411,45 +1276,45 @@ input[type="text"], textarea {
     <button class="btn-export" id="exportExcelBtn">Export to Excel</button>
   </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script>
-let currentPage = 1;
-const pages = ['page1', 'page2', 'page3', 'page4'];
-let db;
-let dbInitialized = false;
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script>
+    let currentPage = 1;
+    const pages = ['page1', 'page2', 'page3', 'page4'];
+    let db;
+    let dbInitialized = false;
 
-// Initialize IndexedDB
-const initDB = () => {
-    return new Promise((resolve, reject) => {
+    // Initialize IndexedDB
+    const initDB = () => {
+      return new Promise((resolve, reject) => {
         const request = indexedDB.open('InspectionDB', 3);
         request.onupgradeneeded = (e) => {
-            db = e.target.result;
-            if (!db.objectStoreNames.contains('inspections')) {
-                db.createObjectStore('inspections', { keyPath: 'timestamp' });
-            }
+          db = e.target.result;
+          if (!db.objectStoreNames.contains('inspections')) {
+            db.createObjectStore('inspections', { keyPath: 'timestamp' });
+          }
         };
         request.onsuccess = (e) => {
-            db = e.target.result;
-            dbInitialized = true;
-            resolve(db);
+          db = e.target.result;
+          dbInitialized = true;
+          resolve(db);
         };
         request.onerror = (e) => reject(e.target.error);
         request.onblocked = () => reject(new Error('Database blocked'));
-    });
-};
+      });
+    };
 
-// Set default values for form fields, including all default checkboxes
-const setDefaultValues = () => {
-    const now = new Date();
-    const dateInput = document.querySelector('input[name="txtDate"]');
-    if (dateInput) {
+    // Set default values for form fields, including all default checkboxes
+    const setDefaultValues = () => {
+      const now = new Date();
+      const dateInput = document.querySelector('input[name="txtDate"]');
+      if (dateInput) {
         dateInput.value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
         console.log('Set default date:', dateInput.value);
-    } else {
+      } else {
         console.warn('Date input not found');
-    }
+      }
 
-    const defaultValues = {
+      const defaultValues = {
         'cmbInspector': 'I(TD)43', 'cmbWeather': 'Sunny', 'cmbCCTV': 'Normal', 'cmbWeightDis': 'Yes',
         'cmbPermitedW': 'Yes', 'cmboffQ': 'No', 'cmbtippingPermitedW': 'Yes', 'cmbtippingTraffic': 'Normal',
         'cmbtippingCCTV': 'Normal', 'cmbGTW': 'Yes', 'cmbCurtain': 'Yes', 'cmbBefore': 'Normal',
@@ -1457,239 +1322,260 @@ const setDefaultValues = () => {
         'cmbPenstock': 'Open', 'cmbCleanliness': 'Yes', 'cmbMinutes': 'No', 'cmbHours': 'No',
         'cmbPLC': 'Normal', 'cmbPreT': 'Normal', 'cmbPenstockChamber': 'Open', 'cmbAerobicS': 'Normal',
         'cmbAnaerobicS': 'Normal', 'cmbPostT': 'Normal', 'cmbCent': 'Yes'
-    };
-    Object.entries(defaultValues).forEach(([name, value]) => {
+      };
+      Object.entries(defaultValues).forEach(([name, value]) => {
         const select = document.querySelector(`select[name="${name}"]`);
         if (select) {
-            select.value = value;
-            console.log(`Set default for ${name}: ${value}`);
+          select.value = value;
+          console.log(`Set default for ${name}: ${value}`);
         } else {
-            console.warn(`Select ${name} not found`);
+          console.warn(`Select ${name} not found`);
         }
-    });
+      });
 
-    const defaultChecked = [
+      const defaultChecked = [
         'chkScreen1', 'chkScreen3', 'chkDAF1', 'chkDAF2', 'chkCrane1', 'chkCrane2', 'chkWash1', 'chkWash2',
-        'chkWeightbridge1', 'chkWeightbridge2', 'chkWeightbridge3','chkC10', 'chkC2', 'chkMF1', 'chkC3', 'chkMF2',
+        'chkWeightbridge1', 'chkWeightbridge2', 'chkWeightbridge3', 'chkC1', 'chkC2', 'chkMF1', 'chkC3', 'chkMF2',
         'chkC4', 'chkMF3', 'chkC5', 'chkMF4', 'chkC6', 'chkMF5', 'chkC7', 'chkMF6', 'chkC8', 'chkC9',
-        'chkC10', 'chktipping1', 'chkT300', 'chkT401', 'chkT402', 'chkT403', 'chkT404'
-    ];
-    defaultChecked.forEach(name => {
+        'chkC10', 'chktipping1', 'chkT300', 'chkT401', 'chkT402', 'chkT403', 'chkT404', 'chkWheelstoppers'
+      ];
+      defaultChecked.forEach(name => {
         const checkbox = document.querySelector(`input[name="${name}"]`);
         if (checkbox) {
-            checkbox.checked = true;
-            checkbox.dispatchEvent(new Event('change'));
-            console.log(`Set ${name} to checked`);
+          checkbox.checked = true;
+          checkbox.dispatchEvent(new Event('change'));
+          console.log(`Set ${name} to checked`);
         } else {
-            console.warn(`Checkbox ${name} not found in DOM`);
+          console.warn(`Checkbox ${name} not found in DOM`);
         }
-    });
-};
+      });
+    };
 
-// Load saved data from localStorage, only overriding if explicitly set
-const loadSavedData = () => {
-    const savedData = JSON.parse(localStorage.getItem('inspectionFormData') || '{}');
-    console.log('Saved data from localStorage:', savedData);
+    // Load saved data from localStorage, only overriding if explicitly set
+    const loadSavedData = () => {
+      const savedData = JSON.parse(localStorage.getItem('inspectionFormData') || '{}');
+      console.log('Saved data from localStorage:', savedData);
 
-    document.querySelectorAll('input, select, textarea').forEach(element => {
+      document.querySelectorAll('input, select, textarea').forEach(element => {
         if (Object.prototype.hasOwnProperty.call(savedData, element.name)) {
-            if (element.type === 'checkbox') {
-                const defaultChecked = [
-                    'chkScreen1', 'chkScreen3', 'chkDAF1', 'chkDAF2', 'chkCrane1', 'chkCrane2', 'chkWash1', 'chkWash2',
-                    'chkWeightbridge1', 'chkWeightbridge2', 'chkWeightbridge3', 'chkC2', 'chkMF1', 'chkC3', 'chkMF2',
-                    'chkC4', 'chkMF3', 'chkC5', 'chkMF4', 'chkC6', 'chkMF5', 'chkC7', 'chkMF6', 'chkC8', 'chkC9',
-                    'chkC10', 'chktipping1', 'chkT300', 'chkT401', 'chkT402', 'chkT403', 'chkT404'
-                ].includes(element.name);
-                const savedValue = savedData[element.name] === 'true';
-                if (!defaultChecked || savedValue !== defaultChecked) {
-                    element.checked = savedValue;
-                    console.log(`Loaded ${element.name}: ${defaultChecked} -> ${element.checked}`);
-                }
-            } else {
-                element.value = savedData[element.name];
-                console.log(`Loaded saved value for ${element.name}: ${element.value}`);
+          if (element.type === 'checkbox') {
+            const defaultChecked = [
+              'chkScreen1', 'chkScreen3', 'chkDAF1', 'chkDAF2', 'chkCrane1', 'chkCrane2', 'chkWash1', 'chkWash2',
+              'chkWeightbridge1', 'chkWeightbridge2', 'chkWeightbridge3', 'chkC1', 'chkC2', 'chkMF1', 'chkC3', 'chkMF2',
+              'chkC4', 'chkMF3', 'chkC5', 'chkMF4', 'chkC6', 'chkMF5', 'chkC7', 'chkMF6', 'chkC8', 'chkC9',
+              'chkC10', 'chktipping1', 'chkT300', 'chkT401', 'chkT402', 'chkT403', 'chkT404', 'chkWheelstoppers'
+            ].includes(element.name);
+            const savedValue = savedData[element.name] === 'true';
+            if (!defaultChecked || savedValue !== defaultChecked) {
+              element.checked = savedValue;
+              console.log(`Loaded ${element.name}: ${defaultChecked} -> ${element.checked}`);
             }
+          } else {
+            element.value = savedData[element.name];
+            console.log(`Loaded saved value for ${element.name}: ${element.value}`);
+          }
         }
-    });
-};
+      });
+    };
 
-// Format time input (e.g., "1423" -> "14:23")
-const formatTimeInput = (input) => {
-    let value = input.value.replace(/\D/g, ''); // Remove non-digits
-    if (value.length === 4) {
+    // Format time input (e.g., "1423" -> "14:23")
+    const formatTimeInput = (input) => {
+      let value = input.value.replace(/\D/g, '');
+      if (value.length === 4) {
         const hours = value.slice(0, 2);
         const minutes = value.slice(2, 4);
         if (hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59) {
-            input.value = `${hours}:${minutes}`;
-            console.log(`Formatted time: ${input.value}`);
+          input.value = `${hours}:${minutes}`;
+          console.log(`Formatted time: ${input.value}`);
         } else {
-            input.value = ''; // Clear invalid input
-            console.warn(`Invalid time input: ${value}`);
+          input.value = '';
+          console.warn(`Invalid time input: ${value}`);
         }
-    } else if (value.length > 4) {
-        input.value = value.slice(0, 4); // Trim to 4 digits if too long
-    }
-};
+      } else if (value.length > 4) {
+        input.value = value.slice(0, 4);
+      }
+    };
 
-// Save data to localStorage on every change
-const saveDataOnChange = () => {
-    const formData = new FormData(document.getElementById('inspectionForm'));
-    const data = Object.fromEntries(formData.entries());
-    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+    // Format bridgeWasteT input (e.g., "D0111" -> "D01/11", "P0945" -> "P09/45")
+    const formatBridgeWasteT = (input) => {
+      let value = input.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+      if (value.length >= 5) {
+        input.value = `${value.slice(0, 3)}/${value.slice(3)}`;
+        console.log(`Formatted bridgeWasteT: ${input.value}`);
+      } else {
+        input.value = value;
+      }
+    };
+
+    // Save data to localStorage on every change
+    const saveDataOnChange = () => {
+      const formData = new FormData(document.getElementById('inspectionForm'));
+      const data = Object.fromEntries(formData.entries());
+      document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
         data[checkbox.name] = checkbox.checked ? 'true' : 'false';
-    });
-    localStorage.setItem('inspectionFormData', JSON.stringify(data));
-};
+      });
+      localStorage.setItem('inspectionFormData', JSON.stringify(data));
+    };
 
-// Show/hide pages
-const showPage = (pageNum) => {
-    pages.forEach(p => document.getElementById(p).classList.add('hidden'));
-    document.getElementById(`page${pageNum}`).classList.remove('hidden');
-};
+    // Show/hide pages
+    const showPage = (pageNum) => {
+      pages.forEach(p => document.getElementById(p).classList.add('hidden'));
+      document.getElementById(`page${pageNum}`).classList.remove('hidden');
+    };
 
-// Status messages
-const showStatus = (message, type = 'success') => {
-    const status = document.getElementById('status');
-    status.textContent = message;
-    status.style.color = type === 'error' ? '#e74c3c' : '#27ae60';
-    setTimeout(() => status.textContent = '', 5000);
-};
+    // Status messages
+    const showStatus = (message, type = 'success') => {
+      const status = document.getElementById('status');
+      status.textContent = message;
+      status.style.color = type === 'error' ? '#e74c3c' : '#27ae60';
+      setTimeout(() => status.textContent = '', 5000);
+    };
 
-// Save to IndexedDB
-const saveLocally = (data) => {
-    return new Promise((resolve, reject) => {
+    // Save to IndexedDB
+    const saveLocally = (data) => {
+      return new Promise((resolve, reject) => {
         if (!dbInitialized || !db) reject(new Error('Database not initialized'));
         const tx = db.transaction('inspections', 'readwrite');
         const store = tx.objectStore('inspections');
         store.add(data).onsuccess = resolve;
         store.onerror = (e) => reject(e.target.error);
-    });
-};
+      });
+    };
 
-// Reset form and clear storage
-const resetForm = () => {
-    document.getElementById('inspectionForm').reset();
-    localStorage.removeItem('inspectionFormData');
-    setDefaultValues();
-};
+    // Reset form and clear storage
+    const resetForm = () => {
+      document.getElementById('inspectionForm').reset();
+      localStorage.removeItem('inspectionFormData');
+      setDefaultValues();
+    };
 
-// Validate form
-const validateForm = (data) => {
-    if (!data.txtDate) return "Date is required";
-    if (!data.txtTime.match(/^(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$/)) return "Invalid time format (HH:MM)";
-    if (!data.cmbInspector) return "Inspector is required";
-    if (!data.cmbWeather) return "Weather is required";
-    return null;
-};
+    // Validate form
+    const validateForm = (data) => {
+      if (!data.txtDate) return "Date is required";
+      if (!data.txtTime.match(/^(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$/)) return "Invalid time format (HH:MM)";
+      if (!data.cmbInspector) return "Inspector is required";
+      if (!data.cmbWeather) return "Weather is required";
+      return null;
+    };
 
-// Show loading
-const showLoading = (pageNum, show) => {
-    document.getElementById(`loading${pageNum}`).style.display = show ? 'flex' : 'none';
-};
+    // Show loading
+    const showLoading = (pageNum, show) => {
+      document.getElementById(`loading${pageNum}`).style.display = show ? 'flex' : 'none';
+    };
 
-// Event Listeners
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM fully loaded, setting up form');
-    setDefaultValues();
-    initDB().then(() => {
+    // Event Listeners
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('DOM fully loaded, setting up form');
+      setDefaultValues();
+      initDB().then(() => {
         loadSavedData();
         showPage(1);
         document.querySelectorAll('input, select, textarea').forEach(element => {
-            element.addEventListener('change', saveDataOnChange);
-            element.addEventListener('input', saveDataOnChange);
+          element.addEventListener('change', saveDataOnChange);
+          element.addEventListener('input', saveDataOnChange);
         });
 
         // Add time formatting to txtTime input
         const timeInput = document.querySelector('input[name="txtTime"]');
         if (timeInput) {
-            timeInput.addEventListener('input', () => formatTimeInput(timeInput));
-            timeInput.addEventListener('change', () => formatTimeInput(timeInput));
-            console.log('Time input formatting enabled');
+          timeInput.addEventListener('input', () => formatTimeInput(timeInput));
+          timeInput.addEventListener('change', () => formatTimeInput(timeInput));
+          console.log('Time input formatting enabled');
         } else {
-            console.warn('Time input (txtTime) not found');
+          console.warn('Time input (txtTime) not found');
         }
-    }).catch(error => console.error('Initialization error:', error));
-});
 
-document.querySelector('.container').addEventListener('click', (e) => {
-    if (e.target.id.startsWith('next') && currentPage < pages.length) {
+        // Add formatting to bridgeWasteT input
+        const bridgeWasteTInput = document.querySelector('input[name="bridgeWasteT"]');
+        if (bridgeWasteTInput) {
+          bridgeWasteTInput.addEventListener('input', () => formatBridgeWasteT(bridgeWasteTInput));
+          bridgeWasteTInput.addEventListener('change', () => formatBridgeWasteT(bridgeWasteTInput));
+          console.log('bridgeWasteT input formatting enabled');
+        } else {
+          console.warn('bridgeWasteT input not found');
+        }
+      }).catch(error => console.error('Initialization error:', error));
+    });
+
+    document.querySelector('.container').addEventListener('click', (e) => {
+      if (e.target.id.startsWith('next') && currentPage < pages.length) {
         currentPage++;
         showPage(currentPage);
-    } else if (e.target.id.startsWith('prev') && currentPage > 1) {
+      } else if (e.target.id.startsWith('prev') && currentPage > 1) {
         currentPage--;
         showPage(currentPage);
-    }
-});
+      }
+    });
 
-document.getElementById('inspectionForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    showLoading(4, true);
-    try {
+    document.getElementById('inspectionForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      showLoading(4, true);
+      try {
         const formData = new FormData(e.target);
         const data = Object.fromEntries(formData.entries());
         data.timestamp = new Date().toISOString();
         document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-            data[checkbox.name] = checkbox.checked ? 'true' : 'false';
+          data[checkbox.name] = checkbox.checked ? 'true' : 'false';
         });
 
         const validationError = validateForm(data);
         if (validationError) {
-            showStatus(validationError, 'error');
-            return;
+          showStatus(validationError, 'error');
+          return;
         }
 
         await saveLocally(data);
         showStatus('Data saved locally!');
         resetForm();
-    } catch (error) {
+      } catch (error) {
         showStatus(`Failed to save data: ${error.message}`, 'error');
-    } finally {
+      } finally {
         showLoading(4, false);
-    }
-});
+      }
+    });
 
-document.getElementById('exportExcelBtn').addEventListener('click', async (e) => {
-    e.preventDefault();
-    if (typeof XLSX === 'undefined') {
+    document.getElementById('exportExcelBtn').addEventListener('click', async (e) => {
+      e.preventDefault();
+      if (typeof XLSX === 'undefined') {
         showStatus('Excel library not loaded. Check your connection.', 'error');
         return;
-    }
-    if (!confirm('Export all local data to Excel and clear the database?')) return;
+      }
+      if (!confirm('Export all local data to Excel and clear the database?')) return;
 
-    showLoading(currentPage, true);
+      showLoading(currentPage, true);
 
-    try {
+      try {
         if (!dbInitialized || !db) {
-            await initDB();
-            if (!dbInitialized) throw new Error('Database failed to initialize');
+          await initDB();
+          if (!dbInitialized) throw new Error('Database failed to initialize');
         }
 
         const tx = db.transaction('inspections', 'readonly');
         const store = tx.objectStore('inspections');
         const data = await new Promise((resolve, reject) => {
-            const request = store.getAll();
-            request.onsuccess = () => resolve(request.result);
-            request.onerror = () => reject(new Error('Failed to retrieve data'));
+          const request = store.getAll();
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => reject(new Error('Failed to retrieve data'));
         });
 
         if (!data || data.length === 0) {
-            showStatus('No local data to export', 'error');
-            return;
+          showStatus('No local data to export', 'error');
+          return;
         }
 
         const uppercaseFields = [
-            'bridgeWasteV', 'bridgeWasteT', 'tippingWasteV', 'tippingWasteT', 'txtC1', 'txtC2', 'txtC3', 'txtC4', 
-            'txtC5', 'txtC6', 'txtC7', 'txtC8', 'txtC9', 'txtC10'
+          'bridgeWasteV', 'bridgeWasteT', 'tippingWasteV', 'tippingWasteT', 'txtC1', 'txtC2', 'txtC3', 'txtC4',
+          'txtC5', 'txtC6', 'txtC7', 'txtC8', 'txtC9', 'txtC10'
         ];
 
         const uppercaseData = data.map(item => {
-            const newItem = { ...item };
-            uppercaseFields.forEach(field => {
-                if (newItem[field] && typeof newItem[field] === 'string') {
-                    newItem[field] = newItem[field].toUpperCase();
-                }
-            });
-            return newItem;
+          const newItem = { ...item };
+          uppercaseFields.forEach(field => {
+            if (newItem[field] && typeof newItem[field] === 'string') {
+              newItem[field] = newItem[field].toUpperCase();
+            }
+          });
+          return newItem;
         });
 
         const reformatDate = (dateStr) => {
