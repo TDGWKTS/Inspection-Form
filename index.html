@@ -689,6 +689,20 @@
             </div>
           </div>
         </div>
+         <div class="row">
+          <div class="col-md-4 field-group">
+            <div class="form-label">C6A</div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="chkC6A" checked>
+              <label class="form-check-label">Checked</label>
+            </div>
+          </div>
+          <div class="col-md-4 field-group">
+            <div class="form-label">Container No. (C6A)</div>
+            <input type="text" class="form-control" name="txtC6A">
+          </div>
+        </div>
+
         <div class="row">
           <div class="col-md-4 field-group">
             <div class="form-label">C7</div>
@@ -1336,7 +1350,7 @@
       const defaultChecked = [
         'chkScreen1', 'chkScreen3', 'chkDAF1', 'chkDAF2', 'chkCrane1', 'chkCrane2', 'chkWash1', 'chkWash2',
         'chkWeightbridge1', 'chkWeightbridge2', 'chkWeightbridge3', 'chkC1', 'chkC2', 'chkMF1', 'chkC3', 'chkMF2',
-        'chkC4', 'chkMF3', 'chkC5', 'chkMF4', 'chkC6', 'chkMF5', 'chkC7', 'chkMF6', 'chkC8', 'chkC9',
+        'chkC4', 'chkMF3', 'chkC5', 'chkMF4', 'chkC6', 'chkC6A', 'chkMF5', 'chkC7', 'chkMF6', 'chkC8', 'chkC9',
         'chkC10', 'chktipping1', 'chkT300', 'chkT401', 'chkT402', 'chkT403', 'chkT404', 'chkWheelstoppers'
       ];
       defaultChecked.forEach(name => {
@@ -1362,7 +1376,7 @@
             const defaultChecked = [
               'chkScreen1', 'chkScreen3', 'chkDAF1', 'chkDAF2', 'chkCrane1', 'chkCrane2', 'chkWash1', 'chkWash2',
               'chkWeightbridge1', 'chkWeightbridge2', 'chkWeightbridge3', 'chkC1', 'chkC2', 'chkMF1', 'chkC3', 'chkMF2',
-              'chkC4', 'chkMF3', 'chkC5', 'chkMF4', 'chkC6', 'chkMF5', 'chkC7', 'chkMF6', 'chkC8', 'chkC9',
+              'chkC4', 'chkMF3', 'chkC5', 'chkMF4', 'chkC6', 'chkC6A', 'chkMF5', 'chkC7', 'chkMF6', 'chkC8', 'chkC9',
               'chkC10', 'chktipping1', 'chkT300', 'chkT401', 'chkT402', 'chkT403', 'chkT404', 'chkWheelstoppers'
             ].includes(element.name);
             const savedValue = savedData[element.name] === 'true';
@@ -1610,7 +1624,7 @@
             "Marine Vessel", "Storm", "VWF", "Rundown", "101", "100", "313", "312", "410", "413",
             "Public", "Road", "Marine", "Scrubbers", "VWS", "401 DO", "402 DO", "403 DO", "404 DO",
             "401 Temp", "402 Temp", "403 Temp", "404 Temp", "404 pH", "Number of Containers Completed", 
-	    "Wheelstopper Conditions", "Wheelstopper Conditions (Remarks)","DG Storage","Timestamp"
+	    "Wheelstopper Conditions", "Wheelstopper Conditions (Remarks)","DG Storage", "C6A", "Container No. (C6A)","Timestamp"
 	    ];
 
         const fieldNames = [
@@ -1636,7 +1650,7 @@
             "txt313", "txt312", "txt410", "txt413", "txtPublic", "txtRoad", "txtMarine", "txtScrubbers",
             "txtVWS", "txt401DO", "txt402DO", "txt403DO", "txt404DO", "txt401Temp", "txt402Temp",
             "txt403Temp", "txt404Temp", "txt404pH", "txtContainers", "chkWheelstoppers", "txtWheelstoppers",
-	    "cmbDG","timestamp"
+	    "cmbDG", "chkC6A", "txtC6A", "timestamp"
         ];
 
         const worksheetData = [
